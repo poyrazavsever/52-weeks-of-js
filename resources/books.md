@@ -8,7 +8,9 @@ Okuduğum ve referans aldığım kaynaklar.
 
 ## Computer Science
 
-<!-- Kitaplar buraya eklenecek -->
+| Görsel                                                                        | Ad                                     | Konu                                       | Okunma Durumu |
+| ----------------------------------------------------------------------------- | -------------------------------------- | ------------------------------------------ | ------------- |
+| <img src="../assets/books/softwareEngineering_IanSommerville.jpg" width="60"> | Software Engineering - Ian Sommerville | Yazılım Mühendisliği, SDLC, Proje Yönetimi | ✓             |
 
 ## System Design
 
