@@ -1,0 +1,15 @@
+# Week 10: SQL & Relational Theory
+
+## Topics
+
+- ACID Properties
+- Raw SQL Queries (SELECT, JOIN, GROUP BY)
+- PostgreSQL setup without ORM
+
+## Goal
+
+To master data manipulation language (DML) directly.
+
+## Summary
+
+<!-- Haftalık özet buraya yazılacak -->

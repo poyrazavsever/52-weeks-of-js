@@ -1,0 +1,15 @@
+# Week 46: LeetCode Practice (LinkedLists/Trees)
+
+## Topics
+
+- Pointer manipulation
+- Inverting trees
+- Level-order traversal
+
+## Goal
+
+To master non-contiguous data structures.
+
+## Summary
+
+<!-- Haftalık özet buraya yazılacak -->

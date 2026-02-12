@@ -1,0 +1,15 @@
+# Week 50: Technical Documentation
+
+## Topics
+
+- Writing technical specifications
+- Architecture Decision Records (ADR)
+- API documentation
+
+## Goal
+
+To communicate complex technical concepts clearly.
+
+## Summary
+
+<!-- Haftalık özet buraya yazılacak -->

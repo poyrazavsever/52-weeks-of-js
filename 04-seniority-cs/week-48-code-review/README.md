@@ -1,0 +1,16 @@
+# Week 48: Code Review Discipline
+
+## Topics
+
+- SOLID Principles
+- DRY, KISS
+- Refactoring techniques
+- Code Smells
+
+## Goal
+
+To write maintainable code and conduct effective peer reviews.
+
+## Summary
+
+<!-- Haftalık özet buraya yazılacak -->

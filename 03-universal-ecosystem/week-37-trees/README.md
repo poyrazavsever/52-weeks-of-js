@@ -1,0 +1,15 @@
+# Week 37: Data Structures II (Trees)
+
+## Topics
+
+- Binary Search Trees (BST)
+- AVL Trees
+- Tree Traversal (BFS/DFS)
+
+## Goal
+
+To solve hierarchical data problems efficiently.
+
+## Summary
+
+<!-- Haftalık özet buraya yazılacak -->

@@ -1,0 +1,13 @@
+# Week 47: LeetCode Practice (DP/Graphs)
+
+## Topics
+
+- Complex dynamic programming and graph traversal problems
+
+## Goal
+
+To solve the most challenging class of interview problems.
+
+## Summary
+
+<!-- Haftalık özet buraya yazılacak -->

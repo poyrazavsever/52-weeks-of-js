@@ -1,0 +1,16 @@
+# Week 14: Advanced Hooks & Performance
+
+## Topics
+
+- useMemo
+- useCallback
+- Referential Equality
+- Custom Hooks design patterns
+
+## Goal
+
+To prevent unnecessary re-renders and memory waste.
+
+## Summary
+
+<!-- Haftalık özet buraya yazılacak -->

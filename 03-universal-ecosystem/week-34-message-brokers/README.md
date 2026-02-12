@@ -1,0 +1,15 @@
+# Week 34: Message Brokers
+
+## Topics
+
+- Publisher/Subscriber Model
+- Message Queues (RabbitMQ/Kafka basics)
+- Async Job Processing
+
+## Goal
+
+To decouple system components and handle background tasks.
+
+## Summary
+
+<!-- Haftalık özet buraya yazılacak -->

@@ -1,0 +1,16 @@
+# Week 44: Web Performance Engineering
+
+## Topics
+
+- Critical Rendering Path analysis
+- Browser Painting
+- Bundle Optimization
+- Tree Shaking
+
+## Goal
+
+To achieve maximum runtime performance on the client side.
+
+## Summary
+
+<!-- Haftalık özet buraya yazılacak -->

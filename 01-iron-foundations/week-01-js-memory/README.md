@@ -1,0 +1,16 @@
+# Week 01: JS Memory Management & Runtime
+
+## Topics
+
+- Stack vs Heap
+- Reference Types
+- Garbage Collection algorithms (Mark and Sweep)
+- Memory Leaks
+
+## Goal
+
+To visualize physical memory allocation when writing code.
+
+## Summary
+
+<!-- Haftalık özet buraya yazılacak -->

@@ -1,0 +1,16 @@
+# Week 33: Caching Strategies
+
+## Topics
+
+- Cache-Aside
+- Write-Through
+- Write-Back
+- Redis Data Structures
+
+## Goal
+
+To reduce database load and improve latency.
+
+## Summary
+
+<!-- Haftalık özet buraya yazılacak -->

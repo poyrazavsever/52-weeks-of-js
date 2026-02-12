@@ -1,0 +1,15 @@
+# Week 38: Data Structures III (Graphs)
+
+## Topics
+
+- Adjacency Matrix vs List
+- Shortest Path Algorithms (Dijkstra)
+- Network flow
+
+## Goal
+
+To solve complex relationship and routing problems.
+
+## Summary
+
+<!-- Haftalık özet buraya yazılacak -->

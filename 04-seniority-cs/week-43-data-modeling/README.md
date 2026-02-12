@@ -1,0 +1,14 @@
+# Week 43: System Design: Data Modeling
+
+## Topics
+
+- NoSQL (Document, Columnar) vs SQL selection criteria
+- Data normalization vs denormalization
+
+## Goal
+
+To choose the right storage technology for specific data patterns.
+
+## Summary
+
+<!-- Haftalık özet buraya yazılacak -->

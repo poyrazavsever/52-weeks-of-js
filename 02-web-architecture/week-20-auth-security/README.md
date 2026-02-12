@@ -1,0 +1,16 @@
+# Week 20: Authentication & Security Theory
+
+## Topics
+
+- OAuth 2.0
+- OpenID Connect
+- JWT vs Session Auth
+- Secure Token Storage (HttpOnly Cookies)
+
+## Goal
+
+To implement secure identity management.
+
+## Summary
+
+<!-- Haftalık özet buraya yazılacak -->

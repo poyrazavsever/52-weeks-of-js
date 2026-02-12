@@ -1,0 +1,16 @@
+# Week 22: Containerization (Docker)
+
+## Topics
+
+- OS-level virtualization
+- Docker Images, Layers
+- Networking, Volumes
+- Dockerfiles
+
+## Goal
+
+To create consistent development and production environments.
+
+## Summary
+
+<!-- Haftalık özet buraya yazılacak -->
