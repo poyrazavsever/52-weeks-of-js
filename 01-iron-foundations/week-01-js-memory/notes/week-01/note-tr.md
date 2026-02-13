@@ -55,3 +55,21 @@ Modern tarayıcıların çoğu bu algoritmayı kullanıyorlar. En basit haliyle 
 (lab/2'in altıntaki kodları inceleyin. F12 -> Konsola gidin ve sonuçları da inceleyin.)
 
 ---
+
+### Bölüm 3
+
+Az önce sizinle garbage collector'ın nasıl çalıştığını öğrendik. Peki ya iki obje birbirini tutuyorsa ama dış dünyadan kimse onları tutmuyorsa ne olacak :)
+
+1. **Circular Referance (Döngüsel Referans)**: 
+- Obje A, Obje B'yi tutuyor. Obje B'de Obje A'yı tutuyor. 
+- Çok eski tarayıcılarda garbage collector sadece "Buna kaç kişi bakıyor?" diye sayıyordu. İkisi birbirine baktığı için sayı asla 0 olmazdı ve bu objeler sonsuza kadar bellekte kalırdı. (Buna memory leak diyoruz, daha sonra geleceğiz)
+- Günümüzdeki motorlar Mark-and-sweep mantığını kullandığı için artık bu bir sorun değil. 
+
+**Mantığı çok basit**: İki arkadaş el ele tutuşup uzay boşluğunda süzülüyor olsun. Birbirlerini tutuyorlar (referans var) ama gemiye (Root/Kök) bağlı değiller. Modern GC, ikisini de uzay çöpü olarak görür ve temizler.
+
+2. **Memory Leak (Bellek Sızıntısı) Nedir?**: 
+Bellek sızıntısı, artık ihtiyaç duymadığın bir verinin, yanlışlıkla veya unutkanlıkla hala "İhtiyaç Var" gibi işaretli kalmasıdır. GC, "Bunu silersem program bozulabilir" korkusuyla o veriye dokunamaz.
+
+Bu durum zamanla RAM'i şişirir, tarayıcıyı yavaşlatır ve en sonunda sayfayı çökertir ("Aw, Snap!" hatası buradan geliyor işte).
+
+(lab/3'in altıntaki kodları inceleyin. F12 -> Konsola gidin ve sonuçları da inceleyin.)
