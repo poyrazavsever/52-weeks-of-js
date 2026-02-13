@@ -1,5 +1,13 @@
 **Şimdi arkadaşlar belleklerin yaşam döngüsü ve veri tipleri ile başlayalım.**
 
+Öncellikle stack ve heap'in ne olduğunu ve mimari farklarının ne olduğunu anlamamız gerekiyor. Aşağıda özet olarak tekrar vereceğim fakat burada javascriptten'de bağımsız olarak öğrenmekte fayda var. 
+
+### 1. Stack (Yığın)
+- Yığın yani stack dediğimiz şeyi üst üste dizilmiş tabaklar gibi düşünebilirsiniz. Burada LIFO - Last in first out dediğimiz bir konsept var. Son giren, ilk çıkar demek. Siz üst üste dizilmiş tabaklarda her zaman en son koyduğunuzu yani en üsttekini alırsınız. Mantık bu. 
+
+**Peki neden hızlı?**:  
+
+
 ### Bölüm 1
 
 Javascriptte ve diğer bir çok dilde de aynı şekilde bellek yönetimi arka planda 3 aşamalı bir döngü ile çalışır.
