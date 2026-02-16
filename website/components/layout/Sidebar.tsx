@@ -108,6 +108,11 @@ export default function Sidebar({
                             </div>
                             {isActive && (
                               <div className="flex gap-2 mt-1">
+                                {week.days && week.days.length > 0 && (
+                                  <span className="text-xs px-1.5 py-0.5 bg-purple-100 text-purple-700 border border-purple-300">
+                                    {week.days.length} Days
+                                  </span>
+                                )}
                                 {week.hasLab && (
                                   <span className="text-xs px-1.5 py-0.5 bg-green-100 text-green-700 border border-green-300">
                                     Lab

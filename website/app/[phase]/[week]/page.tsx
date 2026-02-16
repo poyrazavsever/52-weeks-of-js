@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
-import { getPhases, getWeekContent, getLabFiles } from "@/lib/api";
+import { getPhases, getWeekContent } from "@/lib/api";
 import { parseMDX } from "@/lib/mdx";
 import Sidebar from "@/components/layout/Sidebar";
-import LabViewer from "@/components/shared/LabViewer";
+import DayTabs from "@/components/shared/DayTabs";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
 
 // Type for page params
@@ -61,15 +61,22 @@ export default async function WeekPage({ params }: PageProps) {
     notFound();
   }
 
-  // Parse MDX content
-  const { content: mdxContent } = await parseMDX(content.readme);
-
-  // Get lab files if available
-  let labFiles: any[] = [];
-  if (content.labFolders && content.labFolders.length > 0) {
-    // Get files from first lab folder for now
-    labFiles = getLabFiles(phase, week, content.labFolders[0]);
-  }
+  // Parse each day's note MDX content
+  const dayTabs = await Promise.all(
+    content.days.map(async (day) => {
+      let noteContent = null;
+      if (day.note) {
+        const { content: parsed } = await parseMDX(day.note);
+        noteContent = parsed;
+      }
+      return {
+        dayNumber: day.dayNumber,
+        slug: day.slug,
+        noteContent,
+        labs: day.labs,
+      };
+    }),
+  );
 
   return (
     <div className="flex min-h-screen bg-white">
@@ -80,13 +87,13 @@ export default async function WeekPage({ params }: PageProps) {
       <div className="flex-1 lg:ml-0">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
-            {" "}
             {/* Breadcrumbs */}
             <Breadcrumbs
               phase={phase}
               week={week}
               weekTitle={content.metadata.title}
             />
+
             {/* Header */}
             <header className="mb-8 border-b-2 border-dashed border-gray-200 pb-6">
               <h1 className="text-4xl font-bold mb-4 text-gray-900">
@@ -125,12 +132,10 @@ export default async function WeekPage({ params }: PageProps) {
                 </div>
               )}
             </header>
-            {/* Main Content */}
-            <article className="prose prose-gray max-w-none mb-12">
-              {mdxContent}
-            </article>
-            {/* Lab Section */}
-            {labFiles.length > 0 && <LabViewer files={labFiles} />}
+
+            {/* Day Tabs */}
+            <DayTabs days={dayTabs} />
+
             {/* Navigation */}
             <nav className="mt-12 pt-8 border-t-2 border-dashed border-gray-200 flex justify-between">
               <div className="text-gray-600 text-sm">

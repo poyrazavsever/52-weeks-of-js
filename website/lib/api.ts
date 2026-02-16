@@ -17,6 +17,27 @@ export interface Week {
   phase: string;
   hasLab: boolean;
   hasNotes: boolean;
+  days: DaySummary[];
+}
+
+export interface DaySummary {
+  slug: string; // "day-1", "day-2", etc.
+  number: number;
+  hasNotes: boolean;
+  hasLab: boolean;
+  labCount: number;
+}
+
+export interface DayContent {
+  dayNumber: number;
+  slug: string;
+  note: string; // raw MDX content of note-tr.mdx
+  labs: LabFolder[];
+}
+
+export interface LabFolder {
+  name: string; // "1", "2", "3", etc.
+  files: LabFile[];
 }
 
 export interface WeekContent {
@@ -26,8 +47,7 @@ export interface WeekContent {
     goal?: string;
   };
   readme: string;
-  labFolders?: string[];
-  notesFiles?: string[];
+  days: DayContent[];
 }
 
 export interface LabFile {
@@ -105,8 +125,11 @@ export function getWeeksByPhase(phaseSlug: string): Week[] {
       const weekNumber = parseInt(item.match(/week-(\d+)/)?.[1] || "0");
       const weekTitle = extractWeekTitle(item);
 
-      const hasLab = fs.existsSync(path.join(itemPath, "lab"));
-      const hasNotes = fs.existsSync(path.join(itemPath, "notes"));
+      // Scan for days
+      const days = getDaySummaries(itemPath);
+
+      const hasLab = days.some((d) => d.hasLab);
+      const hasNotes = days.some((d) => d.hasNotes);
 
       weeks.push({
         slug: item,
@@ -115,11 +138,78 @@ export function getWeeksByPhase(phaseSlug: string): Week[] {
         phase: phaseSlug,
         hasLab,
         hasNotes,
+        days,
       });
     }
   });
 
   return weeks.sort((a, b) => a.number - b.number);
+}
+
+/**
+ * Scan a week folder for day-X summaries
+ */
+function getDaySummaries(weekPath: string): DaySummary[] {
+  const days: DaySummary[] = [];
+
+  // Check notes/day-X and lab/day-X
+  const notesPath = path.join(weekPath, "notes");
+  const labPath = path.join(weekPath, "lab");
+
+  // Collect all day slugs from both notes and lab
+  const daySlugs = new Set<string>();
+
+  if (fs.existsSync(notesPath)) {
+    fs.readdirSync(notesPath).forEach((item) => {
+      if (
+        item.startsWith("day-") &&
+        fs.statSync(path.join(notesPath, item)).isDirectory()
+      ) {
+        daySlugs.add(item);
+      }
+    });
+  }
+
+  if (fs.existsSync(labPath)) {
+    fs.readdirSync(labPath).forEach((item) => {
+      if (
+        item.startsWith("day-") &&
+        fs.statSync(path.join(labPath, item)).isDirectory()
+      ) {
+        daySlugs.add(item);
+      }
+    });
+  }
+
+  daySlugs.forEach((slug) => {
+    const dayNumber = parseInt(slug.match(/day-(\d+)/)?.[1] || "0");
+    const dayNotesPath = path.join(notesPath, slug);
+    const dayLabPath = path.join(labPath, slug);
+
+    const hasNotes =
+      fs.existsSync(dayNotesPath) &&
+      fs
+        .readdirSync(dayNotesPath)
+        .some((f) => f.endsWith(".mdx") || f.endsWith(".md"));
+
+    let labCount = 0;
+    const hasLab = fs.existsSync(dayLabPath);
+    if (hasLab) {
+      labCount = fs.readdirSync(dayLabPath).filter((item) => {
+        return fs.statSync(path.join(dayLabPath, item)).isDirectory();
+      }).length;
+    }
+
+    days.push({
+      slug,
+      number: dayNumber,
+      hasNotes,
+      hasLab,
+      labCount,
+    });
+  });
+
+  return days.sort((a, b) => a.number - b.number);
 }
 
 /**
@@ -134,7 +224,7 @@ function extractWeekTitle(folderName: string): string {
 }
 
 /**
- * Get specific week content
+ * Get specific week content with all days
  */
 export function getWeekContent(
   phaseSlug: string,
@@ -149,9 +239,10 @@ export function getWeekContent(
     return null;
   }
 
+  // Read README.mdx for week metadata
   const readmePath = path.join(weekPath, "README.mdx");
   let readme = "";
-  let metadata = {
+  let metadata: WeekContent["metadata"] = {
     title: extractWeekTitle(weekSlug),
   };
 
@@ -160,14 +251,13 @@ export function getWeekContent(
     const { content, data } = matter(fileContent);
     readme = content;
 
-    // Extract topics and goal from markdown if not in frontmatter
     if (!data.topics) {
       const topicsMatch = content.match(/## Topics\n\n([\s\S]*?)\n\n##/);
       if (topicsMatch) {
         data.topics = topicsMatch[1]
           .split("\n")
-          .filter((line) => line.trim().startsWith("-"))
-          .map((line) => line.trim().replace(/^-\s*/, ""));
+          .filter((line: string) => line.trim().startsWith("-"))
+          .map((line: string) => line.trim().replace(/^-\s*/, ""));
       }
     }
 
@@ -181,55 +271,76 @@ export function getWeekContent(
     metadata = { ...metadata, ...data };
   }
 
-  // Get lab folders
-  const labPath = path.join(weekPath, "lab");
-  let labFolders: string[] = [];
-  if (fs.existsSync(labPath)) {
-    labFolders = fs.readdirSync(labPath).filter((item) => {
-      const itemPath = path.join(labPath, item);
-      return fs.statSync(itemPath).isDirectory();
-    });
-  }
-
-  // Get notes files
-  const notesPath = path.join(weekPath, "notes");
-  let notesFiles: string[] = [];
-  if (fs.existsSync(notesPath)) {
-    notesFiles = fs.readdirSync(notesPath).filter((item) => {
-      return item.endsWith(".md");
-    });
-  }
+  // Get day summaries and load full content for each day
+  const daySummaries = getDaySummaries(weekPath);
+  const days: DayContent[] = daySummaries.map((daySummary) =>
+    loadDayContent(weekPath, daySummary),
+  );
 
   return {
     metadata,
     readme,
-    labFolders,
-    notesFiles,
+    days,
   };
 }
 
 /**
- * Get lab files from a specific lab folder
+ * Load full content for a single day
  */
-export function getLabFiles(
-  phaseSlug: string,
-  weekSlug: string,
-  labNumber: string,
-): LabFile[] {
-  const folderName = PHASE_FOLDERS[phaseSlug as keyof typeof PHASE_FOLDERS];
-  if (!folderName) return [];
+function loadDayContent(weekPath: string, daySummary: DaySummary): DayContent {
+  const { slug, number: dayNumber } = daySummary;
 
-  const labPath = path.join(ROOT_DIR, folderName, weekSlug, "lab", labNumber);
-
-  if (!fs.existsSync(labPath)) {
-    return [];
+  // Read note
+  let note = "";
+  const notePath = path.join(weekPath, "notes", slug, "note-tr.mdx");
+  if (fs.existsSync(notePath)) {
+    note = fs.readFileSync(notePath, "utf-8");
+  } else {
+    // Fallback: try note-tr.md or any .mdx/.md file
+    const noteDir = path.join(weekPath, "notes", slug);
+    if (fs.existsSync(noteDir)) {
+      const noteFiles = fs
+        .readdirSync(noteDir)
+        .filter((f) => f.endsWith(".mdx") || f.endsWith(".md"));
+      if (noteFiles.length > 0) {
+        note = fs.readFileSync(path.join(noteDir, noteFiles[0]), "utf-8");
+      }
+    }
   }
 
+  // Read labs
+  const labs: LabFolder[] = [];
+  const labDayPath = path.join(weekPath, "lab", slug);
+  if (fs.existsSync(labDayPath)) {
+    const labFolders = fs
+      .readdirSync(labDayPath)
+      .filter((item) => fs.statSync(path.join(labDayPath, item)).isDirectory())
+      .sort((a, b) => parseInt(a) - parseInt(b));
+
+    labFolders.forEach((folderName) => {
+      const folderPath = path.join(labDayPath, folderName);
+      const files = readLabFolder(folderPath);
+      labs.push({ name: folderName, files });
+    });
+  }
+
+  return {
+    dayNumber,
+    slug,
+    note,
+    labs,
+  };
+}
+
+/**
+ * Read all files from a lab folder
+ */
+function readLabFolder(folderPath: string): LabFile[] {
   const files: LabFile[] = [];
-  const items = fs.readdirSync(labPath);
+  const items = fs.readdirSync(folderPath);
 
   items.forEach((item) => {
-    const filePath = path.join(labPath, item);
+    const filePath = path.join(folderPath, item);
     const stat = fs.statSync(filePath);
 
     if (stat.isFile()) {
