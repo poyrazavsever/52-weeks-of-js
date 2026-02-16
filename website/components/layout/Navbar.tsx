@@ -10,18 +10,22 @@ const menuItems = [
   {
     title: "Iron Foundations",
     href: "/iron-foundations",
+    icon: "mdi:hammer-wrench",
   },
   {
     title: "Web Architecture",
     href: "/web-architecture",
+    icon: "mdi:web",
   },
   {
     title: "Universal Ecosystem",
     href: "/universal-ecosystem",
+    icon: "mdi:earth",
   },
   {
     title: "Seniority & CS",
     href: "/seniority-cs",
+    icon: "mdi:trophy",
   },
 ];
 
@@ -29,10 +33,17 @@ const secondaryItems = [
   {
     title: "Extra / The Lab",
     href: "/extra",
+    icon: "mdi:flask",
   },
   {
     title: "Resources",
     href: "/resources",
+    icon: "mdi:book-open-variant",
+  },
+  {
+    title: "Assets",
+    href: "/assets",
+    icon: "mdi:folder-image",
   },
 ];
 
@@ -118,8 +129,12 @@ export default function Navbar() {
                       key={item.href}
                       href={item.href}
                       onClick={() => setIsOpen(false)}
-                      className="block text-gray-700 hover:text-red-600 font-medium text-sm transition-colors py-1"
+                      className="flex items-center gap-2 text-gray-700 hover:text-red-600 font-medium text-sm transition-colors py-1 group"
                     >
+                      <Icon
+                        icon={item.icon}
+                        className="text-lg text-gray-400 group-hover:text-red-600 transition-colors"
+                      />
                       {item.title}
                     </Link>
                   ))}
@@ -132,8 +147,12 @@ export default function Navbar() {
                       key={item.href}
                       href={item.href}
                       onClick={() => setIsOpen(false)}
-                      className="block text-gray-700 hover:text-red-600 font-medium text-sm transition-colors py-1"
+                      className="flex items-center gap-2 text-gray-700 hover:text-red-600 font-medium text-sm transition-colors py-1 group"
                     >
+                      <Icon
+                        icon={item.icon}
+                        className="text-lg text-gray-400 group-hover:text-red-600 transition-colors"
+                      />
                       {item.title}
                     </Link>
                   ))}

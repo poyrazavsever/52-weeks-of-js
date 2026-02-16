@@ -3,8 +3,8 @@
 **Project:** 52 Weeks of JavaScript - Web Platform  
 **Author:** Poyraz Avsever  
 **Date Created:** February 16, 2026  
-**Last Updated:** February 16, 2026  
-**Status:** ✅ Phase 1, 2 & 3 Complete - Moving to Phase 4 (Styling & Polish)
+**Last Updated:** February 17, 2026  
+**Status:** ✅ Phase 1-5 Complete (Resources & Assets Pages Added)
 
 ---
 
@@ -13,8 +13,11 @@
 **Completed Components:**
 
 - ✅ Button Component (Dashed border, variants, sizes, states)
-- ✅ Navbar Component (Fixed header, dropdown menu, animations)
+- ✅ Navbar Component (Fixed header, dropdown menu with icons, animations)
 - ✅ Root Layout Structure
+- ✅ **Resources Page** - Books, Tools, Weekly Resources
+- ✅ **Extra Page** - Topic-based extra notes with tabbed interface
+- ✅ **Assets Page** - GitHub-linked asset browser with file type icons
 
 **Technology Stack:**
 
@@ -25,7 +28,7 @@
 - Framer Motion 12.34.0
 - @iconify/react 6.0.2
 
-**Completion:** ~50-55% (Phase 1, 2 & 3 Complete)
+**Completion:** ~75-80% (Phase 1, 2, 3 & 5 Complete)
 
 ---
 
@@ -204,7 +207,7 @@
 - ✅ Tabbed interface for multiple files
 - ✅ Copy to clipboard with visual feedback
 - ✅ Download all files button
-- ✅ Syntax highlighting (dark theme)
+- ✅ Syntax highlighting (github-dark-dimmed theme for code blocks)
 - ✅ File info display (language, line count)
 - ✅ Smooth tab switching animations
 - ✅ Responsive code display with scroll
@@ -227,8 +230,8 @@
 - ✅ Responsive text truncation
 - ✅ Integrated in phase and week pages
   </div>
-  );
-  }
+);
+}
 
 ```
 
@@ -280,42 +283,13 @@ export default function Breadcrumbs({ phase, week }: BreadcrumbsProps) {
 
 ---
 
-## 🗓️ PHASE 4: Styling & Polish
+## 🗓️ PHASE 4: Styling & Polish ✅ COMPLETED
 
-### 🌑 Task 8: Dark Theme Uygula
-
-**Files:** `website/app/globals.css`, all components  
-**Estimated Time:** 45 minutes  
-**Status:** Not Started
-
-**Color Palette (from README.md):**
-
-```css
-:root {
-  --bg-primary: #000000; /* Pure black */
-  --bg-secondary: #0a0a0a; /* Elevated surfaces */
-  --text-primary: #ededed; /* High contrast */
-  --text-muted: #a1a1a1; /* Secondary text */
-  --border: rgba(255, 255, 255, 0.1); /* Subtle borders */
-  --accent: #dc2626; /* Red-600 */
-}
-```
-
-**Changes Required:**
-
-- Navbar: Black background, white text
-- Top bar: Keep red
-- All components: Color updates
-- Code blocks: Dark theme syntax highlighting
-- Button variants: Update outline border colors
-
----
-
-### 🔤 Task 9: Font Sistemi
+### ✅ Task 9: Font Sistemi
 
 **Files:** `website/app/layout.tsx`, `globals.css`  
 **Estimated Time:** 30 minutes  
-**Status:** Not Started
+**Status:** ✅ COMPLETED
 
 **Fonts:**
 
@@ -325,6 +299,23 @@ export default function Breadcrumbs({ phase, week }: BreadcrumbsProps) {
 2. **JetBrains Mono** (Code - Google Fonts)
    - Weights: 400, 500
    - Monospace usage
+3. **Agbalumo** (Display - Google Fonts)
+   - Weight: 400
+   - Used for decorative elements
+
+**Implementation Notes:**
+
+- ✅ All fonts configured in `layout.tsx` with CSS variables
+- ✅ Custom scrollbar styling applied
+- ✅ Selection styling (red background)
+- ✅ Font families properly cascaded
+  - Monospace usage
+
+3. **Agbalumo** (Display - Google Fonts)
+   - Weight: 400
+   - Used for decorative elements
+
+**Status:** ✅ All fonts configured and working in layout.tsx
 
 **Implementation:**
 
@@ -369,51 +360,67 @@ export default function RootLayout({ children }) {
 
 ---
 
-## 🗓️ PHASE 5: Content Pages & Deployment
+## 🗓️ PHASE 5: Content Pages & Deployment ✅ PARTIALLY COMPLETED
 
-### 📚 Task 10: Resources ve Extra Sayfaları
+### ✅ Task 10: Resources ve Extra Sayfaları
 
 **Files:**
 
-- `website/app/resources/page.tsx`
-- `website/app/extra/page.tsx`
+- ✅ `website/app/resources/page.tsx` - **COMPLETED**
+- ✅ `website/app/extra/page.tsx` - **COMPLETED**
+- ✅ `website/app/assets/page.tsx` - **COMPLETED (Bonus)**
 
 **Estimated Time:** 30 minutes  
-**Status:** Not Started
+**Actual Time:** ~45 minutes  
+**Status:** ✅ COMPLETED
 
-**Content:**
+**Implemented Features:**
 
-- `/resources`: Display books.md + tools.md + weekly-resources.md
-- `/extra`: Additional notes and lab work
+**Resources Page (`/resources`):**
 
-**Structure:**
+- ✅ MDX parsing for books.mdx, tools.mdx, weekly-resources.mdx
+- ✅ Tailwind Typography styling with custom prose classes
+- ✅ Dashed border design system
+- ✅ Table support with proper styling
+- ✅ Red-accented weekly resources section
 
-```tsx
-// app/resources/page.tsx
-export default async function ResourcesPage() {
-  const books = await getResourceFile("books.md");
-  const tools = await getResourceFile("tools.md");
-  const weekly = await getResourceFile("weekly-resources.md");
+**Extra Page (`/extra`):**
 
-  return (
-    <div className="container mx-auto py-12">
-      <h1>Resources</h1>
-      <section>
-        <h2>Books</h2>
-        <MDXRemote {...books} />
-      </section>
-      <section>
-        <h2>Tools</h2>
-        <MDXRemote {...tools} />
-      </section>
-      <section>
-        <h2>Weekly Resources</h2>
-        <MDXRemote {...weekly} />
-      </section>
-    </div>
-  );
-}
-```
+- ✅ Topic-based structure (reads from `extra/notes/` folders)
+- ✅ Custom `ExtraTopics` component with tabbed interface
+- ✅ Framer Motion animations for tab switching
+- ✅ Main README.mdx display with introduction
+- ✅ API functions: `getExtraContent()` returns `{ readme, topics[] }`
+
+**Assets Page (`/assets`) - Bonus Addition:**
+
+- ✅ Scans `assets/` folder recursively
+- ✅ Groups files by folder (books, etc.)
+- ✅ `AssetsGrid` component with file type icons
+- ✅ GitHub links for each file
+- ✅ File type detection (image, video, document, file)
+- ✅ Color-coded cards by file type
+- ✅ Hover effects and GitHub redirect
+
+**API Updates:**
+
+- ✅ `getExtraContent()`: Returns topic-based extra notes
+- ✅ `getAssetsFiles()`: Recursive asset scanning with GitHub URLs
+- ✅ `ExtraTopic` interface added
+- ✅ `AssetsFile` interface added
+- ✅ Fixed `.mdx` file extension detection in resources
+
+**Component Updates:**
+
+- ✅ Navbar dropdown updated with:
+  - Icons for all menu items (hammer, web, earth, trophy)
+  - Extra/Lab icon: `mdi:flask`
+  - Resources icon: `mdi:book-open-variant`
+  - **Assets icon: `mdi:folder-image`** (NEW)
+
+**Bug Fixes:**
+
+- ✅ Fixed MDX parsing error in `books.mdx` (self-closing `<img>` tag)
 
 ---
 
@@ -522,8 +529,8 @@ copyAssets();
 - **Static Generation:** Build-time SSG for all pages
 - **Type Safety:** TypeScript strict mode throughout
 - **Component Prefix:** `@/` alias points to workspace root
-- **Design Language:** Dashed borders, minimal aesthetic, dark theme
+- **Design Language:** Dashed borders, minimal aesthetic, light theme with red accents
 
 ---
 
-**Last Updated:** February 16, 2026
+**Last Updated:** February 17, 2026

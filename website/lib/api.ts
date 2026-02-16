@@ -57,6 +57,19 @@ export interface LabFile {
   path: string;
 }
 
+export interface ExtraTopic {
+  slug: string;
+  title: string;
+  content: string; // raw MDX content
+}
+
+export interface AssetsFile {
+  name: string;
+  type: string; // 'image', 'pdf', 'video', etc.
+  path: string; // relative path in assets folder
+  githubUrl: string; // full GitHub URL
+}
+
 // Root directory - parent of website folder
 const ROOT_DIR = path.join(process.cwd(), "..");
 
@@ -387,40 +400,143 @@ export function getResourcesContent(): {
 } {
   const resourcesPath = path.join(ROOT_DIR, "resources");
 
-  const books = fs.existsSync(path.join(resourcesPath, "books.md"))
-    ? fs.readFileSync(path.join(resourcesPath, "books.md"), "utf-8")
-    : "";
+  const books = fs.existsSync(path.join(resourcesPath, "books.mdx"))
+    ? fs.readFileSync(path.join(resourcesPath, "books.mdx"), "utf-8")
+    : fs.existsSync(path.join(resourcesPath, "books.md"))
+      ? fs.readFileSync(path.join(resourcesPath, "books.md"), "utf-8")
+      : "";
 
-  const tools = fs.existsSync(path.join(resourcesPath, "tools.md"))
-    ? fs.readFileSync(path.join(resourcesPath, "tools.md"), "utf-8")
-    : "";
+  const tools = fs.existsSync(path.join(resourcesPath, "tools.mdx"))
+    ? fs.readFileSync(path.join(resourcesPath, "tools.mdx"), "utf-8")
+    : fs.existsSync(path.join(resourcesPath, "tools.md"))
+      ? fs.readFileSync(path.join(resourcesPath, "tools.md"), "utf-8")
+      : "";
 
   const weeklyResources = fs.existsSync(
-    path.join(resourcesPath, "weekly-resources.md"),
+    path.join(resourcesPath, "weekly-resources.mdx"),
   )
-    ? fs.readFileSync(path.join(resourcesPath, "weekly-resources.md"), "utf-8")
-    : "";
+    ? fs.readFileSync(path.join(resourcesPath, "weekly-resources.mdx"), "utf-8")
+    : fs.existsSync(path.join(resourcesPath, "weekly-resources.md"))
+      ? fs.readFileSync(
+          path.join(resourcesPath, "weekly-resources.md"),
+          "utf-8",
+        )
+      : "";
 
   return { books, tools, weeklyResources };
 }
 
 /**
- * Get extra content
+ * Get extra content - topic-based structure
  */
-export function getExtraContent(): { notes: string; lab: string } {
+export function getExtraContent(): {
+  readme: string;
+  topics: ExtraTopic[];
+} {
   const extraPath = path.join(ROOT_DIR, "extra");
-
-  // Get all markdown files from notes
   const notesPath = path.join(extraPath, "notes");
-  let notes = "";
-  if (fs.existsSync(notesPath)) {
-    const files = fs.readdirSync(notesPath).filter((f) => f.endsWith(".md"));
-    notes = files
-      .map((f) => {
-        return fs.readFileSync(path.join(notesPath, f), "utf-8");
-      })
-      .join("\n\n---\n\n");
+
+  // Read main README
+  let readme = "";
+  const readmePath = path.join(notesPath, "Readme.mdx");
+  if (fs.existsSync(readmePath)) {
+    readme = fs.readFileSync(readmePath, "utf-8");
   }
+
+  // Scan topic folders
+  const topics: ExtraTopic[] = [];
+  if (fs.existsSync(notesPath)) {
+    const items = fs.readdirSync(notesPath);
+
+    items.forEach((item) => {
+      const itemPath = path.join(notesPath, item);
+      const stat = fs.statSync(itemPath);
+
+      // Skip Readme.mdx and process only directories
+      if (stat.isDirectory()) {
+        const notePath = path.join(itemPath, "note-tr.mdx");
+        if (fs.existsSync(notePath)) {
+          const content = fs.readFileSync(notePath, "utf-8");
+          topics.push({
+            slug: item,
+            title: formatTopicTitle(item),
+            content,
+          });
+        }
+      }
+    });
+  }
+
+  return { readme, topics };
+}
+
+/**
+ * Format topic title from slug
+ * Example: "cpu&gpu" -> "CPU & GPU"
+ */
+function formatTopicTitle(slug: string): string {
+  return slug
+    .split("&")
+    .map((word) => word.toUpperCase())
+    .join(" & ");
+}
+
+/**
+ * Get all assets files for display
+ */
+export function getAssetsFiles(): AssetsFile[] {
+  const assetsPath = path.join(ROOT_DIR, "assets");
+  const baseGithubUrl =
+    "https://github.com/poyrazavsever/52-weeks-of-js/tree/main/assets";
+
+  const files: AssetsFile[] = [];
+
+  function scanDirectory(dirPath: string, relativePath: string = "") {
+    if (!fs.existsSync(dirPath)) return;
+
+    const items = fs.readdirSync(dirPath);
+
+    items.forEach((item) => {
+      const fullPath = path.join(dirPath, item);
+      const stat = fs.statSync(fullPath);
+      const currentRelativePath = relativePath
+        ? `${relativePath}/${item}`
+        : item;
+
+      if (stat.isDirectory()) {
+        // Recursively scan subdirectories
+        scanDirectory(fullPath, currentRelativePath);
+      } else if (stat.isFile()) {
+        const ext = path.extname(item).toLowerCase();
+        const type = getFileType(ext);
+
+        files.push({
+          name: item,
+          type,
+          path: currentRelativePath,
+          githubUrl: `${baseGithubUrl}/${currentRelativePath.replace(/\\/g, "/")}`,
+        });
+      }
+    });
+  }
+
+  scanDirectory(assetsPath);
+  return files;
+}
+
+/**
+ * Determine file type from extension
+ */
+function getFileType(ext: string): string {
+  const imageExts = [".jpg", ".jpeg", ".png", ".gif", ".svg", ".webp"];
+  const videoExts = [".mp4", ".mov", ".avi", ".mkv"];
+  const docExts = [".pdf", ".doc", ".docx"];
+
+  if (imageExts.includes(ext)) return "image";
+  if (videoExts.includes(ext)) return "video";
+  if (docExts.includes(ext)) return "document";
+
+  return "file";
 
   // Lab folder info
   const labPath = path.join(extraPath, "lab");

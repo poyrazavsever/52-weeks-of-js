@@ -6,7 +6,7 @@ import path from "path";
 
 // Rehype Pretty Code options for syntax highlighting
 const rehypePrettyCodeOptions = {
-  theme: "github-dark-dimmed", // VS Code-like dark theme
+  theme: "github-dark-dimmed", // Syntax highlighting theme for code blocks
   keepBackground: true,
   defaultLang: "plaintext",
   onVisitLine(node: any) {

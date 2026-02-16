@@ -24,7 +24,7 @@ export default function HeroSection() {
 
           {/* Right - Hero Image */}
           <div className="flex-1 flex justify-center md:justify-end">
-            <div className="relative w-64 h-auto translate-y-2">
+            <div className="relative w-64 h-96 translate-y-2">
               <Image
                 src="/images/hero.png"
                 alt="Poyraz Avsever - 52 Weeks of Javascript"
