@@ -39,11 +39,11 @@ export default async function ExtraPage() {
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
             {/* Header */}
-            <header className="mb-12 border-b-2 border-dashed border-gray-200 pb-6">
-              <h1 className="text-5xl font-bold mb-4 text-gray-900">
+            <header className="mb-8 border-b-2 border-dashed border-gray-200 pb-6">
+              <h1 className="text-4xl font-bold mb-4 text-gray-900">
                 Extra & The Lab
               </h1>
-              <p className="text-gray-600 text-lg">
+              <p className="text-gray-600">
                 Additional topics and concepts that are useful to know but not
                 directly part of the 52-week curriculum.
               </p>
@@ -51,8 +51,8 @@ export default async function ExtraPage() {
 
             {/* README Introduction */}
             {readmeContent && (
-              <div className="mb-12 bg-red-50 border-2 border-dashed border-red-600 p-6">
-                <article className="prose prose-gray max-w-none prose-p:text-gray-700 prose-strong:text-red-600 prose-ul:text-gray-700">
+              <div className="mb-8">
+                <article className="prose prose-gray max-w-none">
                   {readmeContent}
                 </article>
               </div>

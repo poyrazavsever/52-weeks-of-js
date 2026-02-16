@@ -164,7 +164,7 @@ export default function Sidebar({
       </button>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:block w-80 h-screen sticky top-0 bg-white border-r-2 border-dashed border-gray-200">
+      <aside className="hidden lg:block w-80 h-screen sticky top-0 pt-8 bg-white border-r-2 border-dashed border-gray-200 z-30">
         <SidebarContent />
       </aside>
 
