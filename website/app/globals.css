@@ -38,6 +38,10 @@ pre,
   background: #9ca3af;
 }
 
+.font-display {
+  font-family: var(--font-agbalumo), cursive;
+}
+
 /* Selection */
 ::selection {
   background-color: #dc2626;
