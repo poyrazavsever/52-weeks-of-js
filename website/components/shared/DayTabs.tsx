@@ -24,7 +24,7 @@ export default function DayTabs({ days }: DayTabsProps) {
 
   if (!days || days.length === 0) {
     return (
-      <div className="text-center py-12 text-gray-500">
+      <div className="text-center py-8 text-gray-500 text-xs">
         <p>Bu hafta için henüz içerik eklenmemiş.</p>
       </div>
     );
@@ -35,12 +35,12 @@ export default function DayTabs({ days }: DayTabsProps) {
   return (
     <div>
       {/* Day Tabs */}
-      <div className="flex border-b-2 border-dashed border-gray-200 mb-8">
+      <div className="flex border-b-2 border-dashed border-gray-200 mb-6">
         {days.map((day, index) => (
           <button
             key={day.slug}
             onClick={() => setActiveDay(index)}
-            className={`px-6 py-3 text-sm font-semibold transition-colors border-b-2 -mb-0.5 cursor-pointer ${
+            className={`px-4 py-2 text-xs font-semibold transition-colors border-b-2 -mb-0.5 cursor-pointer ${
               activeDay === index
                 ? "border-red-600 text-red-600"
                 : "border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300"
@@ -68,19 +68,21 @@ export default function DayTabs({ days }: DayTabsProps) {
           )}
 
           {!currentDay.noteContent && currentDay.labs.length === 0 && (
-            <div className="text-center py-12 text-gray-400 border-2 border-dashed border-gray-200">
+            <div className="text-center py-8 text-gray-400 border-2 border-dashed border-gray-200">
               <Icon
                 icon="mdi:file-document-outline"
-                className="text-4xl mx-auto mb-2"
+                className="text-3xl mx-auto mb-1.5"
               />
-              <p>Day {currentDay.dayNumber} için henüz içerik eklenmemiş.</p>
+              <p className="text-xs">
+                Day {currentDay.dayNumber} için henüz içerik eklenmemiş.
+              </p>
             </div>
           )}
 
           {/* Lab Sections */}
           {currentDay.labs.length > 0 && (
-            <div className="mt-10 space-y-8">
-              <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+            <div className="mt-8 space-y-6">
+              <h3 className="text-base font-semibold text-gray-900 flex items-center gap-2">
                 <Icon icon="mdi:code-braces" className="text-red-600" />
                 Lab Dosyaları
               </h3>
@@ -130,20 +132,20 @@ function LabAccordion({ title, files }: LabAccordionProps) {
       {/* Accordion Header */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
+        className="w-full flex items-center justify-between px-3 py-2 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
       >
-        <div className="flex items-center gap-2">
-          <span className="w-6 h-6 bg-red-600 text-white text-xs font-bold flex items-center justify-center">
+        <div className="flex items-center gap-1.5">
+          <span className="w-5 h-5 bg-red-600 text-white text-[0.65rem] font-semibold flex items-center justify-center">
             {title.split(" ")[1]}
           </span>
-          <span className="text-sm font-semibold text-gray-900">{title}</span>
-          <span className="text-xs text-gray-500">
+          <span className="text-xs font-semibold text-gray-900">{title}</span>
+          <span className="text-[0.65rem] text-gray-500">
             ({files.length} {files.length === 1 ? "file" : "files"})
           </span>
         </div>
         <Icon
           icon={isOpen ? "mdi:chevron-up" : "mdi:chevron-down"}
-          className="text-lg text-gray-600"
+          className="text-base text-gray-600"
         />
       </button>
 
@@ -163,7 +165,7 @@ function LabAccordion({ title, files }: LabAccordionProps) {
                 <button
                   key={index}
                   onClick={() => setActiveTab(index)}
-                  className={`px-4 py-2 text-xs font-mono font-semibold transition-colors border-r-2 border-dashed border-gray-300 last:border-r-0 cursor-pointer ${
+                  className={`px-3 py-1.5 text-[0.65rem] font-mono font-semibold transition-colors border-r-2 border-dashed border-gray-300 last:border-r-0 cursor-pointer ${
                     activeTab === index
                       ? "bg-white text-red-600"
                       : "text-gray-600 hover:bg-gray-100"
@@ -178,23 +180,23 @@ function LabAccordion({ title, files }: LabAccordionProps) {
             <div className="relative">
               <button
                 onClick={copyToClipboard}
-                className="absolute top-3 right-3 z-10 px-3 py-1.5 bg-gray-800 text-white text-xs font-semibold hover:bg-gray-700 transition-colors border border-gray-600 flex items-center gap-1.5 cursor-pointer"
+                className="absolute top-2 right-2 z-10 px-2 py-1 bg-gray-800 text-white text-[0.65rem] font-semibold hover:bg-gray-700 transition-colors border border-gray-600 flex items-center gap-1 cursor-pointer"
               >
                 {copied ? (
                   <>
-                    <Icon icon="mdi:check" className="text-green-400" />
+                    <Icon icon="mdi:check" className="text-green-400 text-xs" />
                     Copied!
                   </>
                 ) : (
                   <>
-                    <Icon icon="mdi:content-copy" />
+                    <Icon icon="mdi:content-copy" className="text-xs" />
                     Copy
                   </>
                 )}
               </button>
 
-              <pre className="p-4 overflow-x-auto bg-gray-900 text-gray-100 max-h-96 overflow-y-auto">
-                <code className="text-sm font-mono leading-relaxed">
+              <pre className="p-3 overflow-x-auto bg-gray-900 text-gray-100 max-h-96 overflow-y-auto">
+                <code className="text-xs font-mono leading-relaxed">
                   {currentFile.content}
                 </code>
               </pre>

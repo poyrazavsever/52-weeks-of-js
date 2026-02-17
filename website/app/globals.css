@@ -1,15 +1,57 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* Font Family Variables */
+/**
+ * Design System - Custom Theme
+ * Minimal, refined typography with narrower containers
+ */
+@theme {
+  /* Typography - Smaller, more refined scale */
+  --font-size-xs: 0.6875rem; /* 11px */
+  --font-size-sm: 0.8125rem; /* 13px */
+  --font-size-base: 0.875rem; /* 14px */
+  --font-size-md: 0.9375rem; /* 15px */
+  --font-size-lg: 1rem; /* 16px */
+  --font-size-xl: 1.125rem; /* 18px */
+  --font-size-2xl: 1.375rem; /* 22px */
+  --font-size-3xl: 1.75rem; /* 28px */
+  --font-size-4xl: 2.25rem; /* 36px */
+  --font-size-5xl: 2.75rem; /* 44px */
+  --font-size-6xl: 3.5rem; /* 56px */
+
+  /* Container - Narrower widths */
+  --container-xs: 20rem; /* 320px */
+  --container-sm: 24rem; /* 384px */
+  --container-md: 32rem; /* 512px */
+  --container-lg: 42rem; /* 672px */
+  --container-xl: 52rem; /* 832px */
+  --container-2xl: 60rem; /* 960px */
+  --container-3xl: 68rem; /* 1088px */
+
+  /* Line Heights */
+  --line-height-xs: 1rem;
+  --line-height-sm: 1.25rem;
+  --line-height-base: 1.5rem;
+  --line-height-lg: 1.75rem;
+  --line-height-xl: 2rem;
+  --line-height-2xl: 2.25rem;
+  --line-height-3xl: 2.5rem;
+  --line-height-4xl: 3rem;
+  --line-height-5xl: 3.5rem;
+}
+
+/* Base Typography */
 body {
   font-family:
     var(--font-inter),
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
-    "Roboto",
     sans-serif;
+  font-size: 0.875rem; /* 14px base */
+  line-height: 1.5rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 code,
@@ -18,19 +60,46 @@ pre,
   font-family: var(--font-mono), "Courier New", monospace;
 }
 
-/* Custom Scrollbar */
+.font-display {
+  font-family: var(--font-agbalumo), cursive;
+}
+
+/* Container Override */
+.container {
+  max-width: 68rem; /* 1088px - narrower than default */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Custom Scrollbar - Minimal & Refined */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f3f4f6;
+  background: #f9fafb;
 }
 
 ::-webkit-scrollbar-thumb {
   background: #d1d5db;
-  border: 2px solid #f3f4f6;
+  border: 1px solid #f9fafb;
   border-radius: 4px;
 }
 
@@ -38,12 +107,95 @@ pre,
   background: #9ca3af;
 }
 
-.font-display {
-  font-family: var(--font-agbalumo), cursive;
-}
-
 /* Selection */
 ::selection {
   background-color: #dc2626;
   color: white;
+}
+
+/* Typography Utilities */
+.text-balance {
+  text-wrap: balance;
+}
+
+.text-pretty {
+  text-wrap: pretty;
+}
+
+/* Prose Overrides for MDX - Smaller, refined */
+.prose {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  max-width: 52rem;
+}
+
+.prose h1 {
+  font-size: 2.25rem;
+  line-height: 1.2;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.prose h2 {
+  font-size: 1.75rem;
+  line-height: 1.3;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose h3 {
+  font-size: 1.375rem;
+  line-height: 1.4;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose h4 {
+  font-size: 1.125rem;
+  line-height: 1.5;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose p {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose code {
+  font-size: 0.8125rem;
+  padding: 0.125rem 0.375rem;
+  background-color: #f3f4f6;
+  border-radius: 0.25rem;
+}
+
+.prose pre {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  padding: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.prose ul,
+.prose ol {
+  font-size: 0.875rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding-left: 1.5rem;
+}
+
+.prose li {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.prose blockquote {
+  font-size: 0.9375rem;
+  font-style: italic;
+  border-left: 3px solid #dc2626;
+  padding-left: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  color: #4b5563;
 }

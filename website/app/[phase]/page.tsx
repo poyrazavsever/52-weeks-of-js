@@ -46,57 +46,57 @@ export default async function PhasePage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-10">
         <div className="max-w-4xl mx-auto">
           {/* Breadcrumb */}
           <Breadcrumbs phase={phase} />
 
           {/* Header */}
-          <header className="mb-12 border-b-2 border-dashed border-gray-200 pb-8">
+          <header className="mb-10 border-b-2 border-dashed border-gray-200 pb-6">
             <div className="flex items-start justify-between">
               <div>
-                <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                <h1 className="text-3xl font-semibold text-gray-900 mb-2">
                   {currentPhase.title}
                 </h1>
-                <p className="text-gray-600">
+                <p className="text-sm text-gray-600">
                   Phase {currentPhase.number} • {currentPhase.weeks.length}{" "}
                   Weeks of Intensive Learning
                 </p>
               </div>
-              <div className="w-16 h-16 bg-red-600 flex items-center justify-center text-white font-bold text-2xl">
+              <div className="w-12 h-12 bg-red-600 flex items-center justify-center text-white font-semibold text-lg">
                 {currentPhase.number}
               </div>
             </div>
           </header>
 
           {/* Weeks List */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             {currentPhase.weeks.map((week) => (
               <Link
                 key={week.slug}
                 href={`/${phase}/${week.slug}`}
-                className="block border-2 border-dashed border-gray-300 hover:border-red-600 transition-colors p-6"
+                className="block border-2 border-dashed border-gray-300 hover:border-red-600 transition-colors p-4"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="text-sm font-mono font-semibold text-red-600">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="text-xs font-mono font-semibold text-red-600">
                         Week {week.number.toString().padStart(2, "0")}
                       </span>
-                      <h2 className="text-xl font-bold text-gray-900">
+                      <h2 className="text-base font-semibold text-gray-900">
                         {week.title}
                       </h2>
                     </div>
-                    <div className="flex gap-4 text-xs text-gray-600">
+                    <div className="flex gap-3 text-[0.65rem] text-gray-600">
                       {week.hasLab && (
                         <span className="inline-flex items-center gap-1">
-                          <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                          <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
                           Lab Available
                         </span>
                       )}
                       {week.hasNotes && (
                         <span className="inline-flex items-center gap-1">
-                          <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
                           Notes Available
                         </span>
                       )}
@@ -104,8 +104,8 @@ export default async function PhasePage({ params }: PageProps) {
                   </div>
                   <div className="text-gray-400">
                     <svg
-                      width="24"
-                      height="24"
+                      width="20"
+                      height="20"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -122,14 +122,14 @@ export default async function PhasePage({ params }: PageProps) {
           </div>
 
           {/* Navigation */}
-          <nav className="mt-12 pt-8 border-t-2 border-dashed border-gray-200">
+          <nav className="mt-10 pt-6 border-t-2 border-dashed border-gray-200">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 text-red-600 hover:text-red-700 transition-colors font-semibold"
+              className="inline-flex items-center gap-1.5 text-red-600 hover:text-red-700 transition-colors font-semibold text-sm"
             >
               <svg
-                width="20"
-                height="20"
+                width="16"
+                height="16"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"

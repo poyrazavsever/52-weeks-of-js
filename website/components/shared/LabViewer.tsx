@@ -40,10 +40,10 @@ export default function LabViewer({
   };
 
   return (
-    <section className="mt-12 border-t-2 border-dashed border-gray-200 pt-8">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
-        <span className="text-sm text-gray-600">
+    <section className="mt-10 border-t-2 border-dashed border-gray-200 pt-6">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+        <span className="text-xs text-gray-600">
           {files.length} {files.length === 1 ? "file" : "files"}
         </span>
       </div>
@@ -55,7 +55,7 @@ export default function LabViewer({
             <button
               key={index}
               onClick={() => setActiveTab(index)}
-              className={`px-4 py-3 text-sm font-mono font-semibold transition-colors border-r-2 border-dashed border-gray-900 last:border-r-0 ${
+              className={`px-3 py-2 text-xs font-mono font-semibold transition-colors border-r-2 border-dashed border-gray-900 last:border-r-0 ${
                 activeTab === index
                   ? "bg-white text-red-600"
                   : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
@@ -71,17 +71,17 @@ export default function LabViewer({
           {/* Copy Button */}
           <button
             onClick={copyToClipboard}
-            className="absolute top-3 right-3 z-10 px-3 py-2 bg-gray-800 text-white text-xs font-semibold hover:bg-gray-700 transition-colors border border-gray-600 flex items-center gap-2"
+            className="absolute top-2 right-2 z-10 px-2 py-1 bg-gray-800 text-white text-[0.65rem] font-semibold hover:bg-gray-700 transition-colors border border-gray-600 flex items-center gap-1"
             aria-label="Copy code"
           >
             {copied ? (
               <>
-                <Icon icon="mdi:check" className="text-green-400" />
+                <Icon icon="mdi:check" className="text-green-400 text-xs" />
                 Copied!
               </>
             ) : (
               <>
-                <Icon icon="mdi:content-copy" />
+                <Icon icon="mdi:content-copy" className="text-xs" />
                 Copy
               </>
             )}
@@ -95,8 +95,8 @@ export default function LabViewer({
             transition={{ duration: 0.2 }}
             className="relative"
           >
-            <pre className="p-6 overflow-x-auto bg-gray-900 text-gray-100 max-h-150 overflow-y-auto">
-              <code className="text-sm font-mono leading-relaxed">
+            <pre className="p-4 overflow-x-auto bg-gray-900 text-gray-100 max-h-150 overflow-y-auto">
+              <code className="text-xs font-mono leading-relaxed">
                 {currentFile.content}
               </code>
             </pre>

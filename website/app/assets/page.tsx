@@ -30,24 +30,26 @@ export default function AssetsPage() {
 
       {/* Main Content */}
       <div className="flex-1 lg:ml-0">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-6">
           <div className="max-w-6xl mx-auto">
             {/* Header */}
-            <header className="mb-12 border-b-2 border-dashed border-gray-200 pb-6">
-              <h1 className="text-5xl font-bold mb-4 text-gray-900">Assets</h1>
-              <p className="text-gray-600 text-lg">
+            <header className="mb-10 border-b-2 border-dashed border-gray-200 pb-5">
+              <h1 className="text-4xl font-semibold mb-3 text-gray-900">
+                Assets
+              </h1>
+              <p className="text-gray-600 text-sm">
                 Project assets including images, PDFs, and other resources.
                 Click on any file to view it on GitHub.
               </p>
-              <div className="mt-4 flex items-center gap-2 text-sm text-gray-500">
+              <div className="mt-3 flex items-center gap-2 text-xs text-gray-500">
                 <a
                   href="https://github.com/poyrazavsever/52-weeks-of-js/tree/main/assets"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white hover:bg-red-600 transition-colors border-2 border-dashed border-gray-900 hover:border-red-600"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-900 text-white hover:bg-red-600 transition-colors border-2 border-dashed border-gray-900 hover:border-red-600"
                 >
                   <svg
-                    className="w-5 h-5"
+                    className="w-4 h-4"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -60,10 +62,10 @@ export default function AssetsPage() {
 
             {/* Assets by Folder */}
             {Object.keys(assetsByFolder).length > 0 ? (
-              <div className="space-y-12">
+              <div className="space-y-10">
                 {Object.entries(assetsByFolder).map(([folder, files]) => (
                   <section key={folder}>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b-2 border-dashed border-gray-200 capitalize">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4 pb-2 border-b-2 border-dashed border-gray-200 capitalize">
                       {folder}
                     </h2>
                     <AssetsGrid files={files} />
@@ -71,9 +73,9 @@ export default function AssetsPage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-20 text-gray-400 border-2 border-dashed border-gray-200">
-                <p className="text-lg">No assets available yet.</p>
-                <p className="text-sm mt-2">
+              <div className="text-center py-16 text-gray-400 border-2 border-dashed border-gray-200">
+                <p className="text-base">No assets available yet.</p>
+                <p className="text-xs mt-1.5">
                   Assets will appear here once they are added to the project.
                 </p>
               </div>

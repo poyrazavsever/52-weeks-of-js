@@ -36,14 +36,14 @@ export default async function ExtraPage() {
 
       {/* Main Content */}
       <div className="flex-1 lg:ml-0">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-6">
           <div className="max-w-4xl mx-auto">
             {/* Header */}
-            <header className="mb-8 border-b-2 border-dashed border-gray-200 pb-6">
-              <h1 className="text-4xl font-bold mb-4 text-gray-900">
+            <header className="mb-6 border-b-2 border-dashed border-gray-200 pb-4">
+              <h1 className="text-3xl font-semibold mb-2 text-gray-900">
                 Extra & The Lab
               </h1>
-              <p className="text-gray-600">
+              <p className="text-sm text-gray-600">
                 Additional topics and concepts that are useful to know but not
                 directly part of the 52-week curriculum.
               </p>
@@ -51,7 +51,7 @@ export default async function ExtraPage() {
 
             {/* README Introduction */}
             {readmeContent && (
-              <div className="mb-8">
+              <div className="mb-6">
                 <article className="prose prose-gray max-w-none">
                   {readmeContent}
                 </article>
@@ -62,9 +62,9 @@ export default async function ExtraPage() {
             {parsedTopics.length > 0 ? (
               <ExtraTopics topics={parsedTopics} />
             ) : (
-              <div className="text-center py-20 text-gray-400 border-2 border-dashed border-gray-200">
-                <p className="text-lg">No extra topics available yet.</p>
-                <p className="text-sm mt-2">
+              <div className="text-center py-16 text-gray-400 border-2 border-dashed border-gray-200">
+                <p className="text-base">No extra topics available yet.</p>
+                <p className="text-xs mt-1.5">
                   Check back later for additional learning materials.
                 </p>
               </div>

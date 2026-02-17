@@ -28,14 +28,14 @@ export default async function ResourcesPage() {
 
       {/* Main Content */}
       <div className="flex-1 lg:ml-0">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-6">
           <div className="max-w-4xl mx-auto">
             {/* Header */}
-            <header className="mb-8 border-b-2 border-dashed border-gray-200 pb-6">
-              <h1 className="text-4xl font-bold mb-4 text-gray-900">
+            <header className="mb-6 border-b-2 border-dashed border-gray-200 pb-4">
+              <h1 className="text-3xl font-semibold mb-2 text-gray-900">
                 Resources
               </h1>
-              <p className="text-gray-600">
+              <p className="text-sm text-gray-600">
                 A collection of books, tools, and weekly resources used
                 throughout the 52 weeks journey of mastering JavaScript and
                 software engineering.
@@ -44,7 +44,7 @@ export default async function ResourcesPage() {
 
             {/* Books Section */}
             {booksContent && (
-              <section className="mb-12">
+              <section className="mb-10">
                 <article className="prose prose-gray max-w-none">
                   {booksContent}
                 </article>
@@ -53,7 +53,7 @@ export default async function ResourcesPage() {
 
             {/* Tools Section */}
             {toolsContent && (
-              <section className="mb-12">
+              <section className="mb-10">
                 <article className="prose prose-gray max-w-none">
                   {toolsContent}
                 </article>
@@ -62,7 +62,7 @@ export default async function ResourcesPage() {
 
             {/* Weekly Resources Section */}
             {weeklyContent && (
-              <section className="mb-12">
+              <section className="mb-10">
                 <article className="prose prose-gray max-w-none">
                   {weeklyContent}
                 </article>
@@ -71,9 +71,9 @@ export default async function ResourcesPage() {
 
             {/* Empty State */}
             {!booksContent && !toolsContent && !weeklyContent && (
-              <div className="text-center py-20 text-gray-400 border-2 border-dashed border-gray-200">
-                <p className="text-lg">No resources available yet.</p>
-                <p className="text-sm mt-2">
+              <div className="text-center py-16 text-gray-400 border-2 border-dashed border-gray-200">
+                <p className="text-base">No resources available yet.</p>
+                <p className="text-xs mt-1.5">
                   Check back later for books, tools, and weekly learning
                   materials.
                 </p>

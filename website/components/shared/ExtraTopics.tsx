@@ -28,12 +28,12 @@ export default function ExtraTopics({ topics }: ExtraTopicsProps) {
   return (
     <div>
       {/* Topic Tabs */}
-      <div className="flex flex-wrap border-b-2 border-dashed border-gray-200 mb-8 gap-2">
+      <div className="flex flex-wrap border-b-2 border-dashed border-gray-200 mb-6 gap-1.5">
         {topics.map((topic) => (
           <button
             key={topic.slug}
             onClick={() => setActiveTopic(topic.slug)}
-            className={`px-6 py-3 text-sm font-semibold transition-colors border-b-2 -mb-0.5 cursor-pointer ${
+            className={`px-4 py-2 text-xs font-semibold transition-colors border-b-2 -mb-0.5 cursor-pointer ${
               activeTopic === topic.slug
                 ? "border-red-600 text-red-600"
                 : "border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300"

@@ -41,12 +41,14 @@ export default function Sidebar({
   const SidebarContent = () => (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="p-4 border-b-2 border-dashed border-gray-200">
-        <h2 className="font-bold text-gray-900 text-sm">Navigation</h2>
+      <div className="p-3 border-b-2 border-dashed border-gray-200">
+        <h2 className="font-semibold text-gray-900 text-xs tracking-wide uppercase">
+          Navigation
+        </h2>
       </div>
 
       {/* Navigation Tree */}
-      <nav className="flex-1 overflow-y-auto p-4 space-y-2">
+      <nav className="flex-1 overflow-y-auto p-3 space-y-1.5">
         {phases.map((phase) => {
           const isExpanded = expandedPhases[phase.slug];
           const isCurrentPhase = currentPhase === phase.slug;
@@ -56,21 +58,21 @@ export default function Sidebar({
               {/* Phase Header */}
               <button
                 onClick={() => togglePhase(phase.slug)}
-                className={`w-full flex items-center justify-between px-3 py-2 text-sm font-semibold transition-colors border-2 border-dashed ${
+                className={`w-full flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold transition-colors border-2 border-dashed ${
                   isCurrentPhase
                     ? "bg-red-50 border-red-600 text-red-900"
                     : "border-gray-300 text-gray-700 hover:bg-gray-50"
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <span className="w-5 h-5 flex items-center justify-center bg-red-600 text-white text-xs font-bold">
+                  <span className="w-4 h-4 flex items-center justify-center bg-red-600 text-white text-[0.65rem] font-semibold">
                     {phase.number}
                   </span>
                   <span className="truncate">{phase.title}</span>
                 </div>
                 <Icon
                   icon={isExpanded ? "mdi:chevron-up" : "mdi:chevron-down"}
-                  className="text-lg shrink-0"
+                  className="text-base shrink-0"
                 />
               </button>
 
@@ -84,7 +86,7 @@ export default function Sidebar({
                     transition={{ duration: 0.2 }}
                     className="overflow-hidden"
                   >
-                    <div className="ml-4 space-y-1 pt-1">
+                    <div className="ml-3 space-y-0.5 pt-0.5">
                       {phase.weeks.map((week) => {
                         const isActive = currentWeek === week.slug;
                         const weekPath = `/${phase.slug}/${week.slug}`;
@@ -94,32 +96,32 @@ export default function Sidebar({
                             key={week.slug}
                             href={weekPath}
                             onClick={() => setIsMobileOpen(false)}
-                            className={`block px-3 py-2 text-sm transition-colors border-l-2 ${
+                            className={`block px-2.5 py-1.5 text-xs transition-colors border-l-2 ${
                               isActive
                                 ? "border-red-600 bg-red-50 text-red-900 font-semibold"
                                 : "border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900 hover:border-gray-400"
                             }`}
                           >
-                            <div className="flex items-center gap-2">
-                              <span className="font-mono text-xs">
+                            <div className="flex items-center gap-1.5">
+                              <span className="font-mono text-[0.65rem]">
                                 {week.number.toString().padStart(2, "0")}
                               </span>
                               <span className="truncate">{week.title}</span>
                             </div>
                             {isActive && (
-                              <div className="flex gap-2 mt-1">
+                              <div className="flex gap-1.5 mt-1">
                                 {week.days && week.days.length > 0 && (
-                                  <span className="text-xs px-1.5 py-0.5 bg-purple-100 text-purple-700 border border-purple-300">
+                                  <span className="text-[0.65rem] px-1 py-0.5 bg-purple-100 text-purple-700 border border-purple-300">
                                     {week.days.length} Days
                                   </span>
                                 )}
                                 {week.hasLab && (
-                                  <span className="text-xs px-1.5 py-0.5 bg-green-100 text-green-700 border border-green-300">
+                                  <span className="text-[0.65rem] px-1 py-0.5 bg-green-100 text-green-700 border border-green-300">
                                     Lab
                                   </span>
                                 )}
                                 {week.hasNotes && (
-                                  <span className="text-xs px-1.5 py-0.5 bg-blue-100 text-blue-700 border border-blue-300">
+                                  <span className="text-[0.65rem] px-1 py-0.5 bg-blue-100 text-blue-700 border border-blue-300">
                                     Notes
                                   </span>
                                 )}
@@ -138,10 +140,10 @@ export default function Sidebar({
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t-2 border-dashed border-gray-200">
+      <div className="p-3 border-t-2 border-dashed border-gray-200">
         <Link
           href="/"
-          className="block text-sm text-red-600 hover:text-red-700 font-semibold transition-colors"
+          className="block text-xs text-red-600 hover:text-red-700 font-semibold transition-colors"
         >
           ← Back to Home
         </Link>
@@ -154,17 +156,17 @@ export default function Sidebar({
       {/* Mobile Toggle Button */}
       <button
         onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="lg:hidden fixed bottom-4 right-4 z-50 w-12 h-12 bg-red-600 text-white flex items-center justify-center shadow-lg border-2 border-dashed border-white/30"
+        className="lg:hidden fixed bottom-4 right-4 z-50 w-10 h-10 bg-red-600 text-white flex items-center justify-center shadow-lg border-2 border-dashed border-white/30"
         aria-label="Toggle sidebar"
       >
         <Icon
           icon={isMobileOpen ? "mdi:close" : "mdi:menu"}
-          className="text-2xl"
+          className="text-xl"
         />
       </button>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:block w-80 h-screen sticky top-0 pt-8 bg-white border-r-2 border-dashed border-gray-200 z-30">
+      <aside className="hidden lg:block w-72 h-screen sticky top-0 pt-8 bg-white border-r-2 border-dashed border-gray-200 z-30">
         <SidebarContent />
       </aside>
 
@@ -187,7 +189,7 @@ export default function Sidebar({
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "tween", duration: 0.3 }}
-              className="lg:hidden fixed top-0 left-0 w-80 h-screen bg-white border-r-2 border-dashed border-gray-200 z-50 overflow-hidden"
+              className="lg:hidden fixed top-0 left-0 w-72 h-screen bg-white border-r-2 border-dashed border-gray-200 z-50 overflow-hidden"
             >
               <SidebarContent />
             </motion.aside>

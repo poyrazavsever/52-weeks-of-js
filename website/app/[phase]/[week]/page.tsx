@@ -85,7 +85,7 @@ export default async function WeekPage({ params }: PageProps) {
 
       {/* Main Content */}
       <div className="flex-1 lg:ml-0">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-6">
           <div className="max-w-4xl mx-auto">
             {/* Breadcrumbs */}
             <Breadcrumbs
@@ -95,24 +95,24 @@ export default async function WeekPage({ params }: PageProps) {
             />
 
             {/* Header */}
-            <header className="mb-8 border-b-2 border-dashed border-gray-200 pb-6">
-              <h1 className="text-4xl font-bold mb-4 text-gray-900">
+            <header className="mb-6 border-b-2 border-dashed border-gray-200 pb-4">
+              <h1 className="text-3xl font-semibold mb-3 text-gray-900">
                 {content.metadata.title}
               </h1>
 
               {/* Topics */}
               {content.metadata.topics &&
                 content.metadata.topics.length > 0 && (
-                  <div className="mb-4">
-                    <h2 className="text-sm font-semibold text-gray-600 mb-2">
+                  <div className="mb-3">
+                    <h2 className="text-xs font-semibold text-gray-600 mb-1.5">
                       Topics
                     </h2>
-                    <ul className="flex flex-wrap gap-2">
+                    <ul className="flex flex-wrap gap-1.5">
                       {content.metadata.topics.map(
                         (topic: string, index: number) => (
                           <li
                             key={index}
-                            className="px-3 py-1 bg-gray-100 text-gray-700 text-sm border-2 border-dashed border-gray-300"
+                            className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs border-2 border-dashed border-gray-300"
                           >
                             {topic}
                           </li>
@@ -124,11 +124,13 @@ export default async function WeekPage({ params }: PageProps) {
 
               {/* Goal */}
               {content.metadata.goal && (
-                <div className="bg-red-50 border-2 border-dashed border-red-600 px-4 py-3">
-                  <p className="text-sm font-semibold text-red-900 mb-1">
+                <div className="bg-red-50 border-2 border-dashed border-red-600 px-3 py-2">
+                  <p className="text-xs font-semibold text-red-900 mb-0.5">
                     Goal
                   </p>
-                  <p className="text-gray-800">{content.metadata.goal}</p>
+                  <p className="text-sm text-gray-800">
+                    {content.metadata.goal}
+                  </p>
                 </div>
               )}
             </header>
@@ -137,14 +139,14 @@ export default async function WeekPage({ params }: PageProps) {
             <DayTabs days={dayTabs} />
 
             {/* Navigation */}
-            <nav className="mt-12 pt-8 border-t-2 border-dashed border-gray-200 flex justify-between">
-              <div className="text-gray-600 text-sm">
+            <nav className="mt-10 pt-6 border-t-2 border-dashed border-gray-200 flex justify-between">
+              <div className="text-gray-600 text-xs">
                 Phase:{" "}
                 <span className="font-semibold capitalize">
                   {phase.replace(/-/g, " ")}
                 </span>
               </div>
-              <div className="text-gray-600 text-sm">
+              <div className="text-gray-600 text-xs">
                 Week:{" "}
                 <span className="font-semibold">{content.metadata.title}</span>
               </div>

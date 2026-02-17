@@ -36,19 +36,19 @@ export default function Button({
   };
 
   const sizeStyles = {
-    xs: iconOnly ? "h-7 w-7" : "h-7 px-3 text-xs gap-1.5",
-    sm: iconOnly ? "h-9 w-9" : "h-9 px-4 text-sm gap-2",
-    md: iconOnly ? "h-11 w-11" : "h-11 px-6 text-base gap-2",
-    lg: iconOnly ? "h-13 w-13" : "h-13 px-8 text-lg gap-2.5",
-    xl: iconOnly ? "h-16 w-16" : "h-16 px-10 text-xl gap-3",
+    xs: iconOnly ? "h-6 w-6" : "h-6 px-2 text-[0.65rem] gap-1",
+    sm: iconOnly ? "h-7 w-7" : "h-7 px-3 text-xs gap-1.5",
+    md: iconOnly ? "h-9 w-9" : "h-9 px-4 text-sm gap-1.5",
+    lg: iconOnly ? "h-10 w-10" : "h-10 px-5 text-base gap-2",
+    xl: iconOnly ? "h-12 w-12" : "h-12 px-6 text-lg gap-2",
   };
 
   const iconSizes = {
-    xs: 14,
-    sm: 16,
-    md: 20,
-    lg: 22,
-    xl: 24,
+    xs: 12,
+    sm: 14,
+    md: 16,
+    lg: 18,
+    xl: 20,
   };
 
   const isDisabled = disabled || loading;
@@ -95,7 +95,7 @@ export default function Button({
       )}
 
       {badge && !loading && (
-        <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center bg-red-500 text-white text-xs font-bold">
+        <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center bg-red-500 text-white text-[0.6rem] font-semibold">
           {badge}
         </span>
       )}

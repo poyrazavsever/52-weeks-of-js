@@ -21,7 +21,7 @@ export default function Breadcrumbs({
 
   return (
     <nav
-      className="mb-6 flex items-center gap-2 text-sm flex-wrap"
+      className="mb-4 flex items-center gap-1.5 text-xs flex-wrap"
       aria-label="Breadcrumb"
     >
       <Link
