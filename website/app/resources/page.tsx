@@ -22,12 +22,12 @@ export default async function ResourcesPage() {
     : null;
 
   return (
-    <div className="flex min-h-screen bg-white">
+    <div className="min-h-screen bg-white">
       {/* Sidebar */}
       <Sidebar phases={phases} currentPhase="" currentWeek="" />
 
       {/* Main Content */}
-      <div className="flex-1 lg:ml-0">
+      <div className="lg:pl-72">
         <div className="container mx-auto px-4 py-6">
           <div className="max-w-4xl mx-auto">
             {/* Header */}

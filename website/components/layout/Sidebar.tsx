@@ -166,7 +166,7 @@ export default function Sidebar({
       </button>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:block w-72 h-screen sticky top-0 pt-8 bg-white border-r-2 border-dashed border-gray-200 z-30">
+      <aside className="hidden lg:block fixed left-0 top-23 w-72 h-[calc(100vh-5.75rem)] bg-white border-r-2 border-dashed border-gray-200 z-30 overflow-y-auto">
         <SidebarContent />
       </aside>
 
@@ -180,7 +180,7 @@ export default function Sidebar({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsMobileOpen(false)}
-              className="lg:hidden fixed inset-0 bg-black/50 z-40"
+              className="lg:hidden fixed inset-0 top-23 bg-black/50 z-40"
             />
 
             {/* Sidebar */}
@@ -189,7 +189,7 @@ export default function Sidebar({
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "tween", duration: 0.3 }}
-              className="lg:hidden fixed top-0 left-0 w-72 h-screen bg-white border-r-2 border-dashed border-gray-200 z-50 overflow-hidden"
+              className="lg:hidden fixed left-0 top-23 w-72 h-[calc(100vh-5.75rem)] bg-white border-r-2 border-dashed border-gray-200 z-50 overflow-y-auto"
             >
               <SidebarContent />
             </motion.aside>
