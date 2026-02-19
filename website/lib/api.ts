@@ -538,12 +538,5 @@ function getFileType(ext: string): string {
 
   return "file";
 
-  // Lab folder info
-  const labPath = path.join(extraPath, "lab");
-  let lab = "";
-  if (fs.existsSync(labPath)) {
-    lab = "Extra lab content available";
-  }
-
-  return { notes, lab };
+  // ...existing code...
 }
