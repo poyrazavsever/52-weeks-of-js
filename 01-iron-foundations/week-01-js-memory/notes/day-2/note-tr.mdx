@@ -1,0 +1,10 @@
+### Closures (Kapsamlar) ve Sinsi Sızıntılar
+
+Javascriptte Closure dediğimiz bir olay varmış. Closure, bir fonksiyonun kendi kapsamının dışında tanımlanmış değişkenlere erişebilmesi durumu. Bu, fonksiyonların iç içe geçmesine ve birbirlerine erişmesine olanak tanır.
+
+Bu normalde harika bir özellik. React gibi kütüphanelerin temelini oluşturuyor. Ancak, yanlış kullanıldığında veya bilinçsizce kullanıldığında, bu durum bellek sızıntılarına neden olabilir.
+
+**Peki bu sızıntı nasıl oluyor?**
+Garbage Collector'ın kuralını hatırlayalım önce: "Bir şeye referans varsa, o şey silinmez." Closure'lar, fonksiyonların dışındaki değişkenlere referans tutabilirler. Eğer bu referanslar gereksiz yere tutulursa, GC o değişkenleri temizleyemez ve bellek sızıntısı oluşur.
+
+Daha kötüsüne gelelim. V8 motoru Chrome'un JS motoru yani aynı kapsamdaki değişkenleri birbiriyle paylaşır. Yani bir fonksiyonun içinde tanımlanan bir değişken, o fonksiyonun içinde tanımlanan diğer fonksiyonlar tarafından da erişilebilir olabilir. Eğer bu değişkenler gereksiz yere tutulursa, tüm kapsamdaki değişkenler silinemez ve bellek sızıntısı oluşur.
