@@ -1,0 +1,18 @@
+### Kopuk (Detached) Dom Elemanları
+Bir HTML elemanını DOM'dan kaldırdığınızda (örneğin bir modal kapandığında veya bir dropdown menü yok olduğunda), o eleman hala bellekte kalabilir. Bu, özellikle büyük uygulamalarda ciddi bellek sızıntılarına neden olabilir.
+
+**Peki bu nasıl oluyor?**
+Eğer o DOM elemanını bir JavaScript değişkenine atadıysan ve o değişken hala hayattaysa, elemanı ekrandan (document.body'den) silsen bile Garbage Collector onu bellekten silemez. Buna "Detached DOM Element" (Kopuk DOM Elemanı) denir. Ekranında görünmez, DOM ağacında yoktur ama arka planda RAM tüketmeye devam eder.
+
+Daha da kötüsü, kopuk bir <li></li> elemanını tutuyorsan, o eleman bağlı olduğu tüm <ul></ul> listesini ve kardeş elemanlarını da gizlice bellekte tutabilir!
+
+(day-3/app.js dosyasına bakarak örneği inceleyebilirsiniz.)
+
+
+### Unutulan Event Listener'lar (Olay Dinleyicileri)
+Bu sızıntı türü, Köoük DOM elemanlarıyla el ele gezer ve genellikle en zor tespit edilenidir.
+
+**Sorun nerede başlıyor?**
+Bir butona veya window'a .addEventListener() ile bir görev (callback) atadığında, o görev içindeki fonksiyon bir Closure oluşturur (Bölüm 4'ü hatırla). Eğer o butonu veya bileşeni ekrandan silersen ama dinleyiciyi (removeEventListener) kaldırmayı unutursan, o fonksiyon arka planda çalışmayı ve dışarıdaki devasa verileri bellekte tutmayı sürdürür.
+
+()day-3/app2.js dosyasına bakarak örneği inceleyebilirsiniz.)
