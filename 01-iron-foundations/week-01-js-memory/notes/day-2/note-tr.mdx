@@ -8,3 +8,17 @@ Bu normalde harika bir özellik. React gibi kütüphanelerin temelini oluşturuy
 Garbage Collector'ın kuralını hatırlayalım önce: "Bir şeye referans varsa, o şey silinmez." Closure'lar, fonksiyonların dışındaki değişkenlere referans tutabilirler. Eğer bu referanslar gereksiz yere tutulursa, GC o değişkenleri temizleyemez ve bellek sızıntısı oluşur.
 
 Daha kötüsüne gelelim. V8 motoru Chrome'un JS motoru yani aynı kapsamdaki değişkenleri birbiriyle paylaşır. Yani bir fonksiyonun içinde tanımlanan bir değişken, o fonksiyonun içinde tanımlanan diğer fonksiyonlar tarafından da erişilebilir olabilir. Eğer bu değişkenler gereksiz yere tutulursa, tüm kapsamdaki değişkenler silinemez ve bellek sızıntısı oluşur.
+
+**Peki Poyraz Nasıl Önleriz?**
+Artık o dış veriye ihtiyacın kalmadığında, onu manuel olarak null değerine eşitleyerek bağı koparman gerekir.
+
+(day-2/app.js dosyasına bakarak örneği inceleyebilirsiniz.)
+
+### Unutulan Zamanlayıcılar (Timers) ve Callbacks
+
+Bu, özellikle tek sayfalık uygulamalarda (SPA) yaygın bir sorun (React, Vue vb.). Bir sayfada bir zamanlayıcı başlatırsınız, ancak kullanıcı başka bir sayfaya geçer ve zamanlayıcı hala çalışır durumda kalır. Bu, gereksiz kaynak tüketimine ve bellek sızıntısına neden olabilir.
+
+**Şimdi sorun nerede başlıyor?**
+setInterval veya setTimeout içine yazdığın fonksiyon (callback), dışarıdaki değişkenlere (veya DOM elemanlarına) referans tutar. Eğer bu zamanlayıcıyı temizlemezsen, o referanslar silinemez ve bellek sızıntısı oluşur. GC, o referansları temizleyemez çünkü hala erişilebilir durumdadırlar.
+
+(day-2/app2.js dosyasına bakarak örneği inceleyebilirsiniz.)
