@@ -38,3 +38,13 @@ function sizintiYarat() {
 - Tekrar Memory sekmesine gel ve sol üstteki gri yuvarlak butona basarak ikinci bir fotoğraf çek (Snapshot 2).
 - Snapshot 2'nin içindeyken, hemen üstte "Summary" (Özet) yazan açılır menüyü bul ve onu "Comparison" (Karşılaştırma) olarak değiştir. Sağdan da kıyaslamak için Snapshot 1'i seç.
 - Altındaki "Class filter" (Sınıf filtresi) arama kutusuna Detached yaz.
+
+### Çöp Toplayıcıyı (GC) Manuel Tetiklemek
+
+Allocation Timeline ile çalışırken veya sızıntı ararken bazen "Acaba bu mavi çubuk sızıntı mı, yoksa GC henüz uğramadı mı?" diye şüpheye düşersin.
+
+Memory sekmesindeyken sol üst köşede Çöp Kutusu ikonuna (Collect garbage) benzeyen bir buton vardır. Buna bastığında V8 motoruna temizlik yap emri verirsin (Major GC'yi zorla çalıştırırsın).
+
+Eğer çöp kutusuna basmana rağmen o mavi çubuklar kaybolmuyorsa veya Heap Snapshot boyutun küçülmüyorsa, sızıntı %100 oranında kodundadır.
+
+Bütün bu bellek yönetimi, Garbage Collector mantığı ve sızıntı tespit yöntemlerini adım adım harika bir şekilde işledik.
