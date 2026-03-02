@@ -1,3 +1,102 @@
 ### Bölüm 1: Execution Context (Çalışma Bağlamı)
 
 JavaScript motoru (örneğin Chrome'daki V8) yazdığın kodu direkt olarak okuyup sihirli bir şekilde çalıştırmaz. Kodu çalıştırmak için özel bir "kutu" veya "ameliyathane" hazırlar. İşte kodun değerlendirildiği ve çalıştırıldığı bu izole ortama Execution Context (Çalışma Bağlamı) denir.
+
+**İki ana türü vardır:**
+
+    - Global Execution Context (GEC): Sen JS dosyanı tarayıcıda çalıştırdığın an, hiçbir fonksiyonun içinde olmayan ana kodlar için yaratılan devasa ameliyathanedir. Her programda sadece 1 tane olur. Tarayıcılarda bu bağlam sana window objesini (ve this anahtar kelimesini) yaratır.
+
+    - Function Execution Context (FEC): Ne zaman bir fonksiyonu çağırırsan (tanımladığında değil, çağırdığında. Burası mühim), o fonksiyona özel yepyeni, mini bir ameliyathane kurulur.
+
+**Kaputun Altındaki İki Aşama (0'dan 100'e)**
+
+Bir Execution Context oluşturulduğunda her şey anında çalışmaz. JS motoru bunu iki katı aşamada yapar:
+
+**Aşama 1: Creation Phase (Yaratılış/Bellek Aşaması)**
+
+        - Motor kodu yukarıdan aşağıya sadece tarar (çalıştırmaz).
+
+        - window objesini ve this'i ayarlar.
+
+        - Değişkenler (var, let, const) ve fonksiyonlar için bellekte (Heap/Stack) yer ayırır. (Burada Hoisting dediğimiz olay gerçekleşir, bunu 2. Gün çok detaylı inceleyeceğiz).
+
+**Aşama 2: Execution Phase (Çalıştırma Aşaması)**
+
+    Motor şimdi kodu tekrar yukarıdan aşağı okur ve bu kez çalıştırır.
+
+    Değişkenlere gerçek değerlerini atar (örneğin undefined olan bir değişkene 10 değerini verir) ve fonksiyonları işletir.
+
+
+Kodu Ameliyat Masasına Yatıralım
+
+Diyelim ki poyraz-ui içinde bir Modal bileşeni yazıyorsun ve arka planda şöyle bir tetiklenme zinciri var:
+
+```js
+let anaRenk = "kırmızı";
+
+function butonuHazirla() {
+  let mesaj = "Tıklandı";
+  modalAc(mesaj);
+}
+
+function modalAc(text) {
+  let finalMesaj = "Ekranda: " + text;
+  console.log(finalMesaj);
+}
+
+butonuHazirla(); // Zinciri başlatan çağrı
+```
+
+**JavaScript bunu nasıl yönetir? (Call Stack Devreye Girer)**
+
+Birden fazla ameliyathane (Context) olacağı için JS bunları bir düzene sokmak zorundadır. Bunun için Call Stack (Çağrı Yığını) dediğimiz bir yapı kullanır. (LIFO mantığı: Son giren ilk çıkar).
+
+1. Program başlar: JS motoru hemen Global Execution Context'i yaratır ve Call Stack'in en altına koyar. (Şu an anaRenk değişkeni ve iki fonksiyon belleğe alındı).
+
+2. Satır 12: butonuHazirla() çağrılır.
+
+3. JS motoru durur. Kendi işini beklemeye alır ve butonuHazirla için yepyeni bir Function Execution Context yaratıp Call Stack'in en üstüne ekler.
+
+4. butonuHazirla çalışırken Satır 5'te modalAc(mesaj) çağrılır.
+
+5. JS motoru yine durur! modalAc için yepyeni bir Function Execution Context daha yaratır ve yığının en tepesine koyar.
+
+6. modalAc işini bitirir (console.log çalışır). İşi biten fonksiyonun Context'i Call Stack'ten silinir (çöpe atılır).
+
+7. Kaldığı yere, butonuHazirla'ya geri döner. Onun da işi biter, o da Stack'ten silinir.
+
+8. En son Global Context tek başına kalır, sen sekmeyi kapatana kadar da bekler.
+
+Özetle: Execution Context, kodunun o an çalışması için gereken verilerin tutulduğu bir "kapsayıcıdır". Call Stack ise bu kapsayıcıların sırasını yöneten bir "bekleme odasıdır".
+
+
+### Neden Böyle Bir Sisteme İhtiyaç Var? (Arkasındaki Sebepler)
+**1. JavaScript "Tek Şeritli" Bir Dildir (Single-Threaded)**
+
+Bazı diller (örneğin Java veya C#) aynı anda birden fazla işi yapabilir (Multi-threading). Ama JavaScript tarayıcıda doğmuştur. Eğer iki farklı kod bloğu aynı anda DOM'a (ekrana) müdahale etmeye çalışsaydı (biri butonu silerken diğeri rengini değiştirmeye çalışsaydı) tarayıcı çökerdi.
+
+JS aynı anda sadece bir satır kod çalıştırabilir. Bu yüzden inanılmaz disiplinli ve sıraya sadık olmak zorundadır. "Şu an tam olarak hangi fonksiyonun içindeyim? Buraya nereden geldim? İşim bitince nereye döneceğim?" sorularının kusursuz bir haritasına ihtiyacı vardır. Call Stack işte bu haritadır.
+
+**2. İzolasyon ve Kaosu Önleme (Kutu Mantığı)**
+
+Yüzlerce bileşeni olan karmaşık bir uygulamada binlerce değişken tanımlarsın. Eğer Execution Context (Çalışma Bağlamı) diye izole edilmiş "ameliyathaneler" olmasaydı, A fonksiyonundaki let isim = "Ahmet" değişkeni, B fonksiyonundaki let isim = "Mehmet" değişkeniyle çakışırdı. Her fonksiyon çağrıldığında ona özel, dışarıdan yalıtılmış temiz bir sayfa (Context) açılması, kodun birbirini bozmasını engeller.
+
+### Bunu Bilmek Sana Ne Kazandıracak? (Bağlam)
+Bu teorik bilgi, günlük geliştirme sürecinde şu konularda hayat kurtarır:
+
+**1. Hata Ayıklama (Debugging) Ustası Olacaksın**
+Konsolda kırmızı bir hata gördüğünde altında satırlarca yazan o korkunç metin var ya? Onun adı Stack Trace'tir ve aslında tam olarak o anki Call Stack'in dökümüdür.
+
+Execution Context ve Call Stack'i anladığında, hatanın sadece nerede patladığını değil, "hangi fonksiyonun, hangi fonksiyonu çağırırken, hangi veriyi yanlış taşıdığı için" patladığını o kırmızı metinden bir kitap gibi okumaya başlarsın. Hata çözme süren saatlerden dakikalara iner.
+
+**2. Asenkron Mimarinin (Event Loop) Temelini Atıyorsun**
+
+İleride API'lerden veri çekerken (fetch/axios), setTimeout kullanırken veya React'te state güncellerken kodunun neden bazen yazdığın sırada çalışmadığını göreceksin. JavaScript asenkron işlemleri yönetmek için Event Loop denilen bir sistem kullanır. Ana yol olan Call Stack'in nasıl çalıştığını (fonksiyonların nasıl girip çıktığını) tam olarak kavramadan, asenkron yapıyı (kodun neden beklediğini veya neden arkadan dolandığını) anlamak imkansızdır.
+
+**3. "Maximum Call Stack Size Exceeded" Hatası**
+
+İleride kendi yazdığın bir fonksiyonda yanlışlıkla sonsuz bir döngüye girersen (örneğin fonksiyon sürekli kendi kendini çağırırsa - recursion), tarayıcı sana bu hatayı fırlatır. Artık bileceksin ki, o "ameliyathaneler" üst üste dizile dizile tarayıcının ayırdığı bellek limitini aştı ve kule yıkıldı.
+
+**4. Optimizasyon ve Bellek Yönetimi**
+
+Geliştirdiğin uygulamaların veya araçların performanslı çalışması için, gereksiz fonksiyon çağrılarından kaçınman gerektiğini bileceksin. Her bir fonksiyon çağrısının arka planda bir Execution Context yaratıp RAM'de yer kapladığını (Creation Phase) bilmek, seni daha temiz ve optimize kod yazmaya iter.
