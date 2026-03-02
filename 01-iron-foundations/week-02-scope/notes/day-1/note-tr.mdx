@@ -100,3 +100,78 @@ Execution Context ve Call Stack'i anladığında, hatanın sadece nerede patlad�
 **4. Optimizasyon ve Bellek Yönetimi**
 
 Geliştirdiğin uygulamaların veya araçların performanslı çalışması için, gereksiz fonksiyon çağrılarından kaçınman gerektiğini bileceksin. Her bir fonksiyon çağrısının arka planda bir Execution Context yaratıp RAM'de yer kapladığını (Creation Phase) bilmek, seni daha temiz ve optimize kod yazmaya iter.
+
+--
+
+### 1. Lexical Environment (Sözcüksel Ortam) Nedir?
+Bir önceki bölümde, her fonksiyon çağrıldığında ona özel bir Execution Context (Çalışma Bağlamı) yaratıldığını öğrenmiştik. İşte o bağlamın içinde, senin tanımladığın değişkenleri ve fonksiyonları tutan belleğe Lexical Environment denir.
+
+Lexical Environment iki ana parçadan oluşur:
+
+    - Environment Record (Ortam Kaydı): O fonksiyonun kendi içinde tanımlanmış olan yerel değişkenlerin (local variables) ve fonksiyonların tutulduğu defterdir.
+
+    - Outer Lexical Environment Reference (Dış Ortam Referansı): Kendi defterinde bulamadığı bir değişkeni, bir üst katmanda (kendisini kapsayan dış fonksiyonda) aramasını sağlayan gizli bir bağdır.
+
+**"Lexical" (Sözcüksel) Ne Demek? Neden Bu Kelimeyi Kullanıyoruz?**
+
+Programlamada "Lexical", "kodun fiziksel olarak nereye yazıldığı" anlamına gelir.
+JavaScript'te bir değişkenin veya fonksiyonun kime ait olduğu (kapsamı), kodun nereden çağrıldığına göre değil, klavyeyle kod dosyasında tam olarak nereye yazıldığına göre belirlenir. Bu kuralı aklına kazıman, ileride çok karmaşık hataları şıp diye çözmeni sağlayacak.
+
+
+### 2. Scope Chain (Kapsam Zinciri)
+Şimdi o gizli bağa, yani Outer Reference kısmına odaklanalım. Scope Chain (Kapsam Zinciri), JS motorunun bir değişkeni ararken izlediği hiyerarşik yoldur.
+
+Bir kuralı var: İçeriden dışarıya doğru bakar, ama dışarıdan içeriye bakamaz.
+
+Bunu bir şirket hiyerarşisi gibi düşün:
+
+    - Sen (İç Fonksiyon) bir dosyaya (değişkene) ihtiyaç duyuyorsun. Önce kendi masana (Environment Record) bakarsın.
+
+    - Masanda yoksa, şefine (Dış Fonksiyon / Outer Environment) sorarsın.
+
+    - Şefinde de yoksa, CEO'ya (Global Environment / window) sorarsın.
+
+    - CEO'da da yoksa, işlem iptal olur ve program sana bağırır: ReferenceError: dosya is not defined.
+
+Ancak, CEO gelip senin çekmecendeki (yerel) dosyayı alamaz. Dışarıdaki, içeridekini göremez.
+
+Geliştirdiğin bir UI kütüphanesini (örneğin poyraz-ui) veya bir SaaS projesini düşün. Bileşenleri iç içe yazarken Scope Chain tam olarak şöyle çalışır:
+
+```js
+// Global Lexical Environment (CEO)
+let temaRengi = "Koyu"; 
+
+function modalBileseni() {
+  // Modal Lexical Environment (Şef)
+  let modalBasligi = "Kullanıcı Ayarları";
+
+  function butonBileseni() {
+    // Buton Lexical Environment (Sen)
+    let butonMetni = "Kaydet";
+
+    // 1. Kendi masasına bakar: butonMetni'ni bulur.
+    console.log(butonMetni); 
+    
+    // 2. Kendi masasında bulamaz, bir dışarıya (Modal'a) bakar: modalBasligi'ni bulur.
+    console.log(modalBasligi); 
+    
+    // 3. Kendi masasında yok, Modal'da yok, en dışa (Global'e) bakar: temaRengi'ni bulur.
+    console.log(temaRengi); 
+  }
+
+  butonBileseni();
+  
+  // DİKKAT: Modal, Buton'un içindeki değişkene ulaşamaz! (Dışarıdan içeriye bakılmaz)
+  // console.log(butonMetni); // HATA VERİR: ReferenceError
+}
+
+modalBileseni();
+```
+
+**Motor Bu Kodu Nasıl Okudu?**
+
+    1. butonBileseni içindeki console.log(temaRengi) satırı çalıştığında JS Motoru sorar: "Benim kendi (buton) Lexical Environment'ımda temaRengi diye bir şey var mı?" -> Yok.
+
+    2. O zaman Outer Reference'ı takip eder ve modalBileseni'ne çıkar: "Sende temaRengi var mı?" -> Yok.
+
+    3. Tekrar Outer Reference'ı takip eder ve Global'e çıkar: "Sende var mı?" -> Evet, değeri "Koyu". Alır ve ekrana basar.
