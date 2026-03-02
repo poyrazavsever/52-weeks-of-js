@@ -1,0 +1,38 @@
+### Bölüm 1: Closure Nedir? (Sihrin Kendisi)
+
+En resmi ve teknik tanımıyla Closure; bir fonksiyonun, kendi Lexical Environment'ı (sözcüksel ortamı) dışındaki bir kapsamda çalıştırılsa bile, doğduğu o orijinal ortamı hatırlaması ve oradaki değişkenlere erişebilmesidir.
+
+**Analoji: Sihirli Sırt Çantası**
+
+Analoji: Sihirli Sırt Çantası
+Bir fonksiyonu, başka bir fonksiyonun (annenin) içinde doğan bir çocuk gibi düşün. Çocuk büyüyüp evden (kapsamdan) ayrılacağı zaman, annesi ona görünmez bir "Sırt Çantası" hazırlar. Bu çantanın içine, çocuğun ileride ihtiyaç duyabileceği tüm eşyaları (değişkenleri) koyar. Çocuk dünyanın öbür ucuna da gitse (başka bir dosyada veya asenkron bir setTimeout içinde çalışsa bile), o çanta her zaman sırtındadır. Elini attığında o eski değişkenleri bulur.
+
+Neden bu analojiyi verdim? Çünkü Scope (kapsam) soyut bir kavramdır. Call Stack'ten silinen bir Execution Context'in (annenin) tamamen yok olmadığını, çocuğun (iç fonksiyonun) hafızasında fiziksel bir çanta gibi taşındığını hayal etmek, mekanizmayı zihinde somutlaştırır.
+
+**Lab 1: Çantayı İnceleyelim**
+İşte Closure budur! benimSayacim fonksiyonu, sayi değişkenini sırt çantasında yaşatmaya devam ediyor.
+
+### Bölüm 2: Closure'un Bellek Maliyeti ve Sızıntılar
+Güçlü yönleri olan her sistemin bir de zayıf noktası vardır. Sistem tasarımı (System Design) yaparken en çok dikkat etmen gereken şey bellek yönetimidir. Closure'lar, verileri "hayatta tuttuğu" için bellek dostu değillerdir.
+
+**Analoji: Gemi ve Çıpa**
+Garbage Collector'ı (GC - Çöp Toplayıcı) bir fırtına, bellekteki devasa bir veriyi (örneğin 100 bin satırlık bir tabloyu) dev bir gemi olarak düşün. Fırtına kural gereği başıboş her şeyi silip süpürür. Ancak Closure, o gemiye atılmış kalın bir Çıpa gibidir. Küçücük bir fonksiyon bile sırt çantasında o devasa veriyi taşıyorsa, gemi karaya bağlanmış demektir ve fırtına (GC) onu asla yerinden oynatamaz.
+
+Neden bu analojiyi verdim? Reachability (ulaşılabilirlik) kavramını pekiştirmek için. Sistem, "Bu veriye hala bir fonksiyonun içinden ulaşılabiliyor" dediği an temizliği durdurur. Bu da RAM'in yavaş yavaş şişmesine neden olur.
+
+Lab 2: Çıpayı Koparmak
+
+### Bölüm 3: Bir Süper Güç Olarak "Memoization"
+
+Sistem tasarımında, API Rate Limiting (istek sınırlandırma) veya Caching (önbellekleme) gibi konular performansı belirler. Eğer elinde çok ağır bir hesaplama işlemi varsa (örneğin karmaşık bir algoritma veya ağır bir UI render işlemi), aynı girdilerle bu işlemi tekrar tekrar yapmak CPU'yu ağlatır.
+
+Çözüm? Memoization. Closure kullanarak, bir fonksiyonun daha önce yaptığı hesaplamaları bir "not defterine" kaydetmesini ve aynı soru sorulduğunda işlemi baştan yapmak yerine defterden okumasını sağlamaktır.
+
+**Analoji: Zeki Öğrenci ve Kopya Kağıdı**
+Sınıftaki zeki bir öğrenciye "1534 x 9283 kaç eder?" diye soruyorsun. 10 saniye düşünüp hesaplıyor ve "14,240,122" diyor. Beş saniye sonra aynı soruyu tekrar soruyorsun. Öğrenci bir daha hesap yapmaz, çünkü cevabı zaten yanındaki kopya kağıdına (Cache) yazmıştır. Hemen kağıda bakar ve 1 saniyede cevap verir.
+
+Neden bu analojiyi verdim? Memoization tamamen "geçmişi hatırlamak" üzerinedir. Closure'un o "sırt çantası" özelliği, bu kopya kağıdını güvenli bir şekilde (dışarıdan kimsenin bozamayacağı bir private alanda) saklamak için mükemmel bir yerdir.
+
+**Lab 3: Kendi Önbelleğimizi (Cache) Yazalım**
+
+Bu yapı sayesinde, React'teki useMemo veya useCallback hook'larının arka planda nasıl çalıştığını da anlamış oluyorsun. Hepsinin temelinde yatan sihir Closure'dur!
