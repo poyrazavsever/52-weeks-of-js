@@ -1,0 +1,30 @@
+### Bölüm 1: IIFE (Immediately Invoked Function Expression)
+
+İsmi çok uzun ve havalı gelse de, aslında Türkçe meali şu: "Tanımlandığı Anda Kendi Kendini Çalıştıran Fonksiyon".
+
+**Neden İcat Edildi?**
+
+Dün "Kapsam (Scope)" konusunu işlerken bir kuraldan bahsetmiştik: var sadece ve sadece bir function bloğu içinde hapsedilebilirdi. if veya for onu durduramıyordu. Yazılımcılar da şu zekice çözümü buldular: "Eğer kodumuzu global alana yazmak yerine, isimsiz bir fonksiyonun içine yazıp o fonksiyonu da anında çalıştırırsak, içindeki var değişkenleri globali kirletmez!"
+
+**Analoji: Olay Yeri Çadırı (Steril Alan)**
+
+Diyelim ki sokak ortasında (Global Scope) hassas bir ameliyat yapman gerekiyor. Mikropların (diğer kodların) hastaya (değişkenlerine) bulaşmasını istemiyorsun. Ne yaparsın? Hastanın etrafına geçici, steril bir çadır kurarsın. Ameliyatı çadırın içinde yaparsın, işin bitince çadırı söküp atarsın. Dışarıdaki kimse çadırın içinde ne olduğunu göremez.
+İşte IIFE, kodunun etrafına kurduğun bu tek kullanımlık steril çadırdır.
+
+Lab 1: Çadırı Kuralım
+ormalde bir fonksiyon yazar ve sonra ismini çağırırdık. IIFE'de isme gerek yoktur. Kodu parantez () içine alırız ve sonuna çalıştırma parantezlerini () ekleriz.
+
+### Bölüm 2: Module Pattern (Modül Kalıbı) ve Kapsülleme
+
+IIFE harika bir fikirdi ama küçük bir sorunu vardı: Çok fazla izoleydi!
+Bazen çadırın içindeki her şeyi saklamak istemeyiz. Bazı metodları veya değişkenleri dış dünyanın kullanımına sunmamız (export etmemiz) gerekir. Kendi yazdığımız bir kod parçasını, başkalarının güvenle kullanabileceği bir "Paket" (Modül) haline getirmeliyiz.
+
+İşte IIFE'nin, dışarıya bir return objesi fırlatarak iletişim kurduğu bu tasarıma Module Pattern denir.
+
+**Analoji: Restoran Mutfağı**
+Bir restoran düşün. Mutfak (IIFE) müşterilere kapalıdır. Müşteri (dış dünya) gidip dolaptan eti kendi alamaz veya şefin özel tarifini (Private Variable) göremez. Ancak müşteri açtır ve yemek yemelidir. Restoran bu sorunu bir Garson (Return Objesi) ile çözer. Garson sana sadece menüdeki "sipariş ver" (Public Method) yeteneğini sunar. Sen siparişi verirsin, arka planda mutfak çalışır ve sana yemeği getirir.
+
+**Lab 2: Kendi Modülümüzü Yazalım**
+Bunu poyraz-ui gibi bir bileşen kütüphanesinin çekirdeğini inşa ediyormuşuz gibi düşünelim. Dışarıdan kimsenin ana ayarları bozmasını istemiyoruz, sadece onlara izin verdiğimiz fonksiyonları kullanabilsinler.
+
+Modern JavaScript'te (ES6 ve sonrası) artık import ve export anahtar kelimeleriyle çalışan ES Modules (ESM) sistemini kullanıyoruz. Ancak arka planda dönen mantık, izolasyon ihtiyacı ve veriyi koruma içgüdüsü tamamen bu Module Pattern tarihçesinden gelir.
