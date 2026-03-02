@@ -1,8 +1,8 @@
 // 1. Fonksiyonu tanımlamadan ÖNCE çağırıyoruz!
-selamVer(); 
+selamVer();
 
 // 2. Değişkeni tanımlamadan ÖNCE konsola yazdırıyoruz!
-console.log(benimAdim); 
+console.log(benimAdim);
 
 // Asıl tanımlamalar burada:
 var benimAdim = "Poyraz";

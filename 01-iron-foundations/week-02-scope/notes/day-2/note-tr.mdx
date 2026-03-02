@@ -1,0 +1,54 @@
+### Bölüm 1: Hoisting (Yukarı Taşıma) Yanılsaması
+
+Hoisting, kelime anlamı olarak "yukarı kaldırmak/taşımak" demektir. JavaScript'te bir değişkeni veya fonksiyonu, kodda tanımladığın satırdan daha üstteki bir satırda kullanabilme yeteneğidir.
+
+**Analoji: Restorandaki Menü**
+Restorana gittin ve sipariş vereceksin. Aşçı henüz yemeği yapmaya başlamadı (kodu çalıştırmadı), ama garson sana bir Menü getirdi (Creation Phase). Sen o menüye bakıp "Köfte var mı?" dediğinde, köfte henüz masanda olmasa da garson "Evet, var" der.
+Neden bu analojiyi verdim? Çünkü kodumuzu yukarıdan aşağıya sırayla çalışıyor sanırız. Ama JS motoru, kodu çalıştırmadan önce o "Menüyü" çıkarır. Değişkenlerin ve fonksiyonların isimlerini defterine yazar. Bu yüzden kodun daha aşağıdaki bir satırında yazan fonksiyona, yukarıdan çağrı yapabiliriz.
+
+Lab 1: Hoisting Deneyi (aşağıdan bakabilirsiniz)
+
+**Sonuç ne olur?**
+
+    selamVer() -> Mükemmel çalışır! Ekrana "Merhaba, nasılsın?" yazar. (Çünkü fonksiyon bildirimleri tamamen belleğe alınır).
+
+    console.log(benimAdim) -> Hata vermez, ama ekrana undefined yazar. Neden "Poyraz" değil? Çünkü JS motoru var benimAdim kısmını menüye yazar (Hoisting), ama = "Poyraz" değer atamasını kodu satır satır çalıştırırken (Execution Phase) yapar. O yüzden benimAdim değişkeni var ama değeri henüz atanmadığı için undefined olur.
+
+### var vs let / const (Scope Savaşları)
+Yıllarca JavaScript sadece var kullandı. Fakat var'ın çok büyük bir problemi vardı: Sınır tanımıyordu! ES6 (2015) ile bu kaosu çözmek için let ve const icat edildi.
+
+Aralarındaki en büyük fark Scope (Kapsam) anlayışlarıdır:
+
+    - var -> Function Scoped'dur: Sadece bir function'ın süslü parantezlerini {} sınır olarak kabul eder. Diğer blokları takmaz.
+
+    - let ve const -> Block Scoped'dur: Her türlü süslü parantezi (if, for, while) devasa bir tuğla duvar olarak kabul eder ve dışarı çıkamaz.
+
+**Analoji: Açık Ofis vs. Şifreli Kasa**
+
+var kelimesini bir "Açık Ofis" gibi düşün. Bir fonksiyonun (binanın) içindeysen, nereye gidersen git var'ı görebilirsin. Toplantı odasında (if bloğu) konuşulanları dışarıdaki herkes duyar.
+
+let ve const ise "Şifreli Kasa" gibidir. Hangi süslü parantezin {} içinde tanımlandıysa, sadece o odanın içindekiler görebilir. Dışarı sızmaz.
+
+Neden bu analojiyi verdim? Çünkü yazılımda  verilerin birbirine karışmaması (izolasyon) hayati önem taşır. Sadece bir if koşulu için geçici bir değişken yaratıyorsan, onun tüm fonksiyonu kirletmesini istemezsin.
+
+Lab 2: Sızıntı Deneyi (aşağıdan görebilirsiniz)
+
+Lab'ı çalıştırdınız ve sonucu gördünüz :)
+İşte bu yüzden modern JavaScript'te var kullanımı neredeyse tamamen terk edilmiştir.
+
+
+### Bölüm 3: Temporal Dead Zone (TDZ - Geçici Ölü Bölge)
+
+Peki, "Eğer let ve const bu kadar harikaysa, onlar Hoisting işlemine (yukarı taşınmaya) maruz kalmıyor mu?" diye bir soru gelebilir aklına.
+
+**Cevap:** Evet, onlar da Hoisting'e uğrar! Ancak JS yaratıcıları var'daki o saçma undefined hatasını (Lab 1'deki) düzeltmek için harika bir mekanizma kurdular: Temporal Dead Zone (TDZ).
+
+**Analoji: Karantina Bölgesi**
+Bunu bir suç mahallindeki sarı polis şeridi gibi düşün. JS motoru kodu tararken (Creation Phase) let ve const değişkenlerini görür ve bellekte yer ayırır (yani Hoisting yapar). Ancak atama satırına (let yas = 20;) gelene kadar o değişkenin etrafına bir "Karantina Şeridi" çeker. Şeridi geçip değişkene dokunmaya çalışırsan polis (JS Motoru) anında kırmızı kartı gösterir ve kodu durdurur.
+Neden bu analojiyi verdim? 
+
+Çünkü mülakatlarda en çok düşülen tuzak budur: "let hoist edilmez" denir. Yanlıştır! Edilir, ama karantinaya alındığı için erişilemez. Hatanın adı "Yok" değil, "Erişemezsin" hatasıdır.
+
+**Lab 3: Karantina İhlali (Aşağıda 3'ten bakabilirsiniz.)**
+
+Dikkat edersen hata gizliBilgi is not defined (böyle bir şey yok) değil, Cannot access BEFORE initialization (Henüz başlatılmadığı için erişemezsin). Yani JS motoru onun orada olduğunu biliyor (Hoisting), sadece dokunmanı yasaklıyor (TDZ).
