@@ -1,0 +1,40 @@
+### Chrome DevTools ile Bellek Analizi
+Tarayıcında F12'ye basıp "Memory" (Bellek) sekmesine geçtiğinde karşına üç ana araç çıkar. Biz sızıntı (leak) aramasında en çok ilk ikisini kullanıyoruz:
+
+**1. Heap Snapshot (Bellek Fotoğrafı)**
+O anki Heap belleğinin tam bir röntgenini çeker. Bellekte hangi objeden kaç tane var, ne kadar yer kaplıyor hepsini gösterir. En büyük gücü, iki farklı zamanda fotoğraf çekip aradaki farkı (Comparison) bulabilmesidir.
+
+**2. Allocation Instrumentation on Timeline (Zaman Çizelgesinde Yer Ayırma)**
+
+Sayfada işlem yaparken belleğe nelerin eklendiğini ve nelerin silindiğini canlı bir video gibi kaydeder.
+
+Grafikte çubuklar görürsün:
+- Mavi Çubuklar: Bellekte o an yaratılan ve hala orada duran (silinmemiş) veriler.
+- Gri Çubuklar: Yaratılmış ama Garbage Collector (GC) tarafından temizlenmiş veriler Eğer kayıt sonunda sürekli mavi çubuklar görüyorsan, tebrikler, bir bellek sızıntısı buldun!
+
+Hadi bir önceki bölümde öğrendiğimiz "Detached DOM" (Kopuk Eleman) sızıntısını kendi ellerimizle yapıp araçla bulalım.
+
+Konsolu (Console) açıp şu kodu yapıştır ve enter'a bas:
+
+```js
+// Global bir dizi, sızıntıyı burada biriktireceğiz
+let kopukElemanlarTorbasi = [];
+
+function sizintiYarat() {
+  for (let i = 0; i < 1000; i++) {
+    let div = document.createElement('div');
+    div.innerText = "Ben bir hayaletim!";
+    // Elemanı DOM'a (ekrana) EKLEMİYORUZ, sadece değişkene atıyoruz.
+    kopukElemanlarTorbasi.push(div); 
+  }
+  console.log("1000 adet görünmez eleman belleğe eklendi.");
+}
+```
+
+#### Sızıntıyı Yakalama Adımları:
+- Memory sekmesine geç.
+- "Heap snapshot" seçeneğini işaretle ve aşağıdaki "Take snapshot" butonuna bas. (Bu bizim temiz durumumuz: Snapshot 1).
+- Şimdi Console sekmesine geri dön ve sizintiYarat() yazarak fonksiyonu çalıştır.
+- Tekrar Memory sekmesine gel ve sol üstteki gri yuvarlak butona basarak ikinci bir fotoğraf çek (Snapshot 2).
+- Snapshot 2'nin içindeyken, hemen üstte "Summary" (Özet) yazan açılır menüyü bul ve onu "Comparison" (Karşılaştırma) olarak değiştir. Sağdan da kıyaslamak için Snapshot 1'i seç.
+- Altındaki "Class filter" (Sınıf filtresi) arama kutusuna Detached yaz.
