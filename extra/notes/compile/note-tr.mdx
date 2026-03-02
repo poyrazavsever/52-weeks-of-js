@@ -1,0 +1,35 @@
+### 1. Derleme (Compilation) ve Yorumlama (Interpretation) Mantığı
+
+Bilgisayarların dili olan Makine Dili (Machine Code), insanların okuyup yazması için imkansıza yakındır. Bu yüzden JavaScript, C++ veya Python gibi "Yüksek Seviyeli Diller" kullanırız. Bu dillerin makine diline çevrilmesi için iki ana yöntem vardır:
+
+    - Derleyici (Compiler): Kodu çalışmadan önce bir bütün olarak alır, baştan sona okur ve doğrudan makine diline çevirir (Örn: C++). Sonuç olarak ortaya bir .exe (çalıştırılabilir) dosyası çıkar. Çok hızlı çalışır ama derleme süresi vakit alır.
+
+    - Yorumlayıcı (Interpreter): Kodu satır satır okur ve o an anında makine diline çevirip çalıştırır (Örn: Eski nesil Python veya eski JavaScript). Başlaması hızlıdır ama çalışma anında yavaştır.
+
+
+### 2. JavaScript Nasıl Compile Edilir? (JIT Compilation)
+
+JavaScript aslında teknik olarak saf bir şekilde "compile" edilen (derlenen) bir dil değildir. Eskiden tamamen yorumlanan (interpreted) bir dildi ve bu yüzden yavaştı. Ancak günümüzde modern tarayıcılar JIT (Just-In-Time) Compilation yani "Tam Zamanında Derleme" adını verdiğimiz harika bir melez teknoloji kullanır.
+
+Tarayıcıların içinde JavaScript'i anlayan "Motorlar" (Engine) vardır. (Örneğin Chrome ve Node.js için V8, Firefox için SpiderMonkey, Safari için JavaScriptCore gibi gibi).
+
+**Chrome'un V8 Motoru kodumuzu şu adımlarla anlar:**
+
+    - Parsing (Ayrıştırma): Yazdığın JS kodu önce kelimelere (tokens) bölünür. Sonra bu kelimelerden kodun dilbilgisi haritası olan AST (Abstract Syntax Tree - Soyut Sözdizimi Ağacı) oluşturulur.
+
+    - Bytecode'a Çevirme (Ignition): AST, yorumlayıcı (interpreter) tarafından hızlıca çalışabilen ara bir dil olan "Bytecode"a çevrilir ve kod hemen çalışmaya başlar. (Tarayıcı ekranının hızlı açılması için bu önemlidir).
+
+    - Tam Zamanında Derleme (TurboFan JIT Compiler): Kod çalışırken, V8 motoru kodu izler. Eğer bir döngüyü veya fonksiyonu çok fazla kullandığını fark ederse (buna Hot Code denir), arka planda bu kısmı doğrudan makine diline (0 ve 1'lere) derler (compile eder) ve optimize eder. Bir dahaki sefere o fonksiyon çok daha hızlı çalışır.
+
+
+### 3. Bilgisayar ve Tarayıcılar Kodu Nasıl Anlıyor?
+
+Süreci baştan sona özetlersek, bilgisayarının kodunu anlama süreci şu şekilde işler:
+
+    Tarayıcı (Browser): Bir web sitesine girdiğinde HTML ve CSS'i okur. Ekrana şekilleri çizer. Karşısına <script></script> etiketi çıktığında, “Bunu ben anlamam, bu JavaScript motorunun işi” der ve kodu V8 motoruna (veya ilgili motora) yollar.
+
+    JS Motoru: Yukarıda bahsettiğimiz JIT derleme sürecini işletir. Kodu hızlıca Bytecode'a, ardından çok kullanılan kısımları saf Makine Diline çevirir.
+
+    İşlemci (CPU): Makine dili, işlemcinin komut setidir (Instruction Set). İşlemci bu 0 ve 1'leri aldığında, içindeki milyonlarca mikroskobik transistör (anahtar) açılıp kapanır. Bu açılıp kapanmalar sonucunda ekranda bir renk değişir, veri tabanına bir bilgi gider veya hoparlörden ses çıkar.
+
+Özetle dostum, yazdığın JavaScript kodunu tarayıcı içindeki özel bir motor anında analiz eder, hızlı başlasın diye yorumlar, sonra ağır kısımlarını makine diline derleyerek işlemcinin anlayacağı elektrik sinyallerine dönüştürür.
