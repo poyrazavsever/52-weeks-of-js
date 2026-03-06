@@ -2,7 +2,17 @@
 
 import { useState } from "react";
 import { Icon } from "@iconify/react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Badge, Button, ScrollArea } from "poyraz-ui/atoms";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "poyraz-ui/molecules";
 import type { LabFile } from "@/lib/api";
 
 interface DayTab {
@@ -20,102 +30,85 @@ interface DayTabsProps {
 }
 
 export default function DayTabs({ days }: DayTabsProps) {
-  const [activeDay, setActiveDay] = useState(0);
-
   if (!days || days.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500 text-xs">
-        <p>Bu hafta için henüz içerik eklenmemiş.</p>
+      <div className="py-8 text-center text-xs text-gray-500">
+        <p>Bu hafta icin henuz icerik eklenmemis.</p>
       </div>
     );
   }
 
-  const currentDay = days[activeDay];
-
   return (
-    <div>
-      {/* Day Tabs */}
-      <div className="flex border-b-2 border-dashed border-gray-200 mb-6">
-        {days.map((day, index) => (
-          <button
-            key={day.slug}
-            onClick={() => setActiveDay(index)}
-            className={`px-4 py-2 text-xs font-semibold transition-colors border-b-2 -mb-0.5 cursor-pointer ${
-              activeDay === index
-                ? "border-red-600 text-red-600"
-                : "border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300"
-            }`}
-          >
+    <Tabs defaultValue={days[0].slug} className="w-full">
+      <TabsList className="mb-6 h-auto flex-wrap justify-start">
+        {days.map((day) => (
+          <TabsTrigger key={day.slug} value={day.slug}>
             Day {day.dayNumber}
-          </button>
+          </TabsTrigger>
         ))}
-      </div>
+      </TabsList>
 
-      {/* Day Content */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentDay.slug}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.2 }}
-        >
-          {/* Note Content */}
-          {currentDay.noteContent && (
-            <article className="prose prose-gray max-w-none mb-12">
-              {currentDay.noteContent}
+      {days.map((day) => (
+        <TabsContent key={day.slug} value={day.slug} className="mt-0">
+          {day.noteContent && (
+            <article className="prose prose-gray mb-12 max-w-none">
+              {day.noteContent}
             </article>
           )}
 
-          {!currentDay.noteContent && currentDay.labs.length === 0 && (
-            <div className="text-center py-8 text-gray-400 border-2 border-dashed border-gray-200">
+          {!day.noteContent && day.labs.length === 0 && (
+            <div className="rounded-sm border py-8 text-center text-gray-400">
               <Icon
                 icon="mdi:file-document-outline"
-                className="text-3xl mx-auto mb-1.5"
+                className="mx-auto mb-1.5 text-3xl"
               />
               <p className="text-xs">
-                Day {currentDay.dayNumber} için henüz içerik eklenmemiş.
+                Day {day.dayNumber} icin henuz icerik eklenmemis.
               </p>
             </div>
           )}
 
-          {/* Lab Sections */}
-          {currentDay.labs.length > 0 && (
-            <div className="mt-8 space-y-6">
-              <h3 className="text-base font-semibold text-gray-900 flex items-center gap-2">
+          {day.labs.length > 0 && (
+            <div className="mt-8 space-y-4">
+              <div className="flex items-center gap-2">
                 <Icon icon="mdi:code-braces" className="text-red-600" />
-                Lab Dosyaları
-              </h3>
-              {currentDay.labs.map((lab) => (
-                <LabAccordion
-                  key={lab.name}
-                  title={`Lab ${lab.name}`}
-                  files={lab.files}
-                />
-              ))}
+                <h3 className="text-base font-semibold text-gray-900">
+                  Lab Dosyalari
+                </h3>
+              </div>
+
+              <Accordion type="single" collapsible>
+                {day.labs.map((lab) => (
+                  <LabAccordion
+                    key={lab.name}
+                    value={lab.name}
+                    title={`Lab ${lab.name}`}
+                    files={lab.files}
+                  />
+                ))}
+              </Accordion>
             </div>
           )}
-        </motion.div>
-      </AnimatePresence>
-    </div>
+        </TabsContent>
+      ))}
+    </Tabs>
   );
 }
 
-/* ─── Lab Accordion ─── */
-
 interface LabAccordionProps {
+  value: string;
   title: string;
   files: LabFile[];
 }
 
-function LabAccordion({ title, files }: LabAccordionProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState(0);
+function LabAccordion({ value, title, files }: LabAccordionProps) {
+  const [activeFile, setActiveFile] = useState(files[0]?.name ?? "");
   const [copied, setCopied] = useState(false);
 
   if (!files || files.length === 0) return null;
 
-  const currentFile = files[activeTab];
+  const currentFile =
+    files.find((file) => file.name === activeFile) ?? files[0];
 
   const copyToClipboard = async () => {
     try {
@@ -128,89 +121,59 @@ function LabAccordion({ title, files }: LabAccordionProps) {
   };
 
   return (
-    <div className="border-2 border-dashed border-gray-300">
-      {/* Accordion Header */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between px-3 py-2 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
-      >
-        <div className="flex items-center gap-1.5">
-          <span className="w-5 h-5 bg-red-600 text-white text-[0.65rem] font-semibold flex items-center justify-center">
-            {title.split(" ")[1]}
-          </span>
-          <span className="text-xs font-semibold text-gray-900">{title}</span>
+    <AccordionItem value={value}>
+      <AccordionTrigger>
+        <span className="flex items-center gap-2">
+          <Badge>{title.split(" ")[1]}</Badge>
+          <span>{title}</span>
           <span className="text-[0.65rem] text-gray-500">
             ({files.length} {files.length === 1 ? "file" : "files"})
           </span>
-        </div>
-        <Icon
-          icon={isOpen ? "mdi:chevron-up" : "mdi:chevron-down"}
-          className="text-base text-gray-600"
-        />
-      </button>
+        </span>
+      </AccordionTrigger>
+      <AccordionContent>
+        <Tabs value={activeFile} onValueChange={setActiveFile}>
+          <TabsList className="mb-3 h-auto flex-wrap justify-start">
+            {files.map((file) => (
+              <TabsTrigger key={file.name} value={file.name}>
+                {file.name}
+              </TabsTrigger>
+            ))}
+          </TabsList>
 
-      {/* Accordion Content */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            {/* File Tabs */}
-            <div className="flex border-t-2 border-b-2 border-dashed border-gray-300 bg-gray-50">
-              {files.map((file, index) => (
-                <button
-                  key={index}
-                  onClick={() => setActiveTab(index)}
-                  className={`px-3 py-1.5 text-[0.65rem] font-mono font-semibold transition-colors border-r-2 border-dashed border-gray-300 last:border-r-0 cursor-pointer ${
-                    activeTab === index
-                      ? "bg-white text-red-600"
-                      : "text-gray-600 hover:bg-gray-100"
-                  }`}
-                >
-                  {file.name}
-                </button>
-              ))}
-            </div>
+          {files.map((file) => (
+            <TabsContent key={file.name} value={file.name}>
+              <div className="relative rounded-sm border bg-gray-950 text-gray-100">
+                <div className="absolute right-3 top-3 z-10">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={copyToClipboard}
+                    className="bg-white/90"
+                  >
+                    {copied ? "Copied!" : "Copy"}
+                  </Button>
+                </div>
 
-            {/* Code Display */}
-            <div className="relative">
-              <button
-                onClick={copyToClipboard}
-                className="absolute top-2 right-2 z-10 px-2 py-1 bg-gray-800 text-white text-[0.65rem] font-semibold hover:bg-gray-700 transition-colors border border-gray-600 flex items-center gap-1 cursor-pointer"
-              >
-                {copied ? (
-                  <>
-                    <Icon icon="mdi:check" className="text-green-400 text-xs" />
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <Icon icon="mdi:content-copy" className="text-xs" />
-                    Copy
-                  </>
-                )}
-              </button>
+                <ScrollArea className="max-h-96">
+                  <pre className="overflow-x-auto p-4">
+                    <code className="text-xs font-mono leading-relaxed">
+                      {file.content}
+                    </code>
+                  </pre>
+                </ScrollArea>
 
-              <pre className="p-3 overflow-x-auto bg-gray-900 text-gray-100 max-h-96 overflow-y-auto">
-                <code className="text-xs font-mono leading-relaxed">
-                  {currentFile.content}
-                </code>
-              </pre>
-
-              <div className="flex items-center justify-between px-4 py-1.5 bg-gray-100 border-t-2 border-dashed border-gray-300 text-xs text-gray-500">
-                <span className="font-mono">{currentFile.language}</span>
-                <span className="font-mono">
-                  {currentFile.content.split("\n").length} lines
-                </span>
+                <div className="flex items-center justify-between border-t bg-gray-100 px-4 py-2 text-xs text-gray-600">
+                  <span className="font-mono">{file.language}</span>
+                  <span className="font-mono">
+                    {file.content.split("\n").length} lines
+                  </span>
+                </div>
               </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+            </TabsContent>
+          ))}
+        </Tabs>
+      </AccordionContent>
+    </AccordionItem>
   );
 }

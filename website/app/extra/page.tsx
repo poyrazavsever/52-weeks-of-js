@@ -36,10 +36,9 @@ export default async function ExtraPage() {
 
       {/* Main Content */}
       <div className="lg:pl-72">
-        <div className="container mx-auto px-4 py-6">
-          <div className="max-w-4xl mx-auto">
+        <div className="px-6 py-3 lg:px-8">
             {/* Header */}
-            <header className="mb-6 border-b-2 border-dashed border-gray-200 pb-4">
+            <header className="mb-6 pt-1">
               <h1 className="text-3xl font-semibold mb-2 text-gray-900">
                 Extra & The Lab
               </h1>
@@ -69,7 +68,6 @@ export default async function ExtraPage() {
                 </p>
               </div>
             )}
-          </div>
         </div>
       </div>
     </div>

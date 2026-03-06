@@ -1,5 +1,13 @@
 import Link from "next/link";
 import { getPhases } from "@/lib/api";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "poyraz-ui/molecules";
 
 interface BreadcrumbsProps {
   phase: string;
@@ -20,34 +28,28 @@ export default function Breadcrumbs({
   }
 
   return (
-    <nav
-      className="mb-4 flex items-center gap-1.5 text-xs flex-wrap"
-      aria-label="Breadcrumb"
-    >
-      <Link
-        href="/"
-        className="text-gray-600 hover:text-red-600 transition-colors font-medium"
-      >
-        Home
-      </Link>
-
-      <span className="text-gray-400">/</span>
-
-      <Link
-        href={`/${phase}`}
-        className="text-gray-600 hover:text-red-600 transition-colors font-medium"
-      >
-        {currentPhase.title}
-      </Link>
-
-      {week && (
-        <>
-          <span className="text-gray-400">/</span>
-          <span className="text-gray-900 font-semibold truncate max-w-xs sm:max-w-md">
-            {weekTitle || week}
-          </span>
-        </>
-      )}
-    </nav>
+    <Breadcrumb className="mb-4">
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink asChild>
+            <Link href="/">Home</Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbLink asChild>
+            <Link href={`/${phase}`}>{currentPhase.title}</Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        {week && (
+          <>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{weekTitle || week}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </>
+        )}
+      </BreadcrumbList>
+    </Breadcrumb>
   );
 }

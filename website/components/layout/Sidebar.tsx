@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Icon } from "@iconify/react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Badge } from "poyraz-ui/atoms";
 import type { Phase } from "@/lib/api";
 
 interface SidebarProps {
@@ -13,150 +12,155 @@ interface SidebarProps {
   currentWeek?: string;
 }
 
+interface SidebarTreeProps extends SidebarProps {
+  expandedPhases: Record<string, boolean>;
+  onTogglePhase: (phaseSlug: string) => void;
+  onNavigate: () => void;
+  mobile?: boolean;
+}
+
+function SidebarTree({
+  phases,
+  currentPhase,
+  currentWeek,
+  expandedPhases,
+  onTogglePhase,
+  onNavigate,
+  mobile = false,
+}: SidebarTreeProps) {
+  return (
+    <div className="flex h-full flex-col bg-white">
+      <div className="flex-1 overflow-y-auto px-4 pt-5 pb-4">
+        <nav className="space-y-5" aria-label="Sidebar navigation">
+          {phases.map((phase) => {
+            const isExpanded = expandedPhases[phase.slug];
+            const isCurrentPhase = currentPhase === phase.slug;
+
+            return (
+              <section key={phase.slug} className="space-y-2">
+                <button
+                  onClick={() => onTogglePhase(phase.slug)}
+                  className={`flex w-full items-center justify-between rounded-sm px-2 py-2 text-left transition-colors ${
+                    isCurrentPhase
+                      ? "bg-slate-100 text-slate-900"
+                      : "text-slate-700 hover:bg-slate-50"
+                  }`}
+                  aria-expanded={isExpanded}
+                >
+                  <span className="flex items-center gap-2 overflow-hidden">
+                    <Badge className="min-w-5 justify-center px-1 py-0 text-[10px]">
+                      {phase.number}
+                    </Badge>
+                    <span className="truncate text-xs font-semibold tracking-wide">
+                      {phase.title}
+                    </span>
+                  </span>
+                  <Icon
+                    icon={isExpanded ? "mdi:chevron-up" : "mdi:chevron-down"}
+                    className="text-base text-slate-500"
+                  />
+                </button>
+
+                {isExpanded && (
+                  <div className="space-y-0.5 pl-1">
+                    {phase.weeks.map((week) => {
+                      const isActive = currentWeek === week.slug;
+                      return (
+                        <Link
+                          key={week.slug}
+                          href={`/${phase.slug}/${week.slug}`}
+                          onClick={onNavigate}
+                          className={`flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm transition-colors ${
+                            isActive
+                              ? "bg-red-50 text-red-700"
+                              : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                          }`}
+                        >
+                          <span className="w-6 shrink-0 text-[10px] font-mono text-slate-400">
+                            {week.number.toString().padStart(2, "0")}
+                          </span>
+                          <span className="truncate">{week.title}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </section>
+            );
+          })}
+        </nav>
+      </div>
+
+      <div className="border-t border-slate-200 px-4 py-3">
+        {mobile ? (
+          <div className="space-y-1 text-xs">
+            <Link
+              href="/"
+              onClick={onNavigate}
+              className="block rounded-sm px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+            >
+              Home
+            </Link>
+            <Link
+              href="/resources"
+              onClick={onNavigate}
+              className="block rounded-sm px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+            >
+              Resources
+            </Link>
+            <Link
+              href="/extra"
+              onClick={onNavigate}
+              className="block rounded-sm px-2 py-1.5 text-slate-600 hover:bg-slate-50"
+            >
+              Extra & The Lab
+            </Link>
+          </div>
+        ) : (
+          <Link
+            href="/"
+            onClick={onNavigate}
+            className="block rounded-sm px-2 py-1.5 text-xs font-semibold tracking-wide text-slate-600 hover:bg-slate-50"
+          >
+            Back to Home
+          </Link>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function Sidebar({
   phases,
   currentPhase,
   currentWeek,
 }: SidebarProps) {
-  const pathname = usePathname();
   const [expandedPhases, setExpandedPhases] = useState<Record<string, boolean>>(
     () => {
-      // Auto-expand current phase
       const initial: Record<string, boolean> = {};
-      if (currentPhase) {
-        initial[currentPhase] = true;
-      }
+      if (currentPhase) initial[currentPhase] = true;
       return initial;
     },
   );
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  const togglePhase = (phaseSlug: string) => {
-    setExpandedPhases((prev) => ({
-      ...prev,
-      [phaseSlug]: !prev[phaseSlug],
-    }));
+  const handleTogglePhase = (phaseSlug: string) => {
+    setExpandedPhases((prev) => {
+      const nextOpen = !prev[phaseSlug];
+      if (!nextOpen) return {};
+      return { [phaseSlug]: true };
+    });
   };
 
-  const SidebarContent = () => (
-    <div className="h-full flex flex-col">
-      {/* Header */}
-      <div className="p-3 border-b-2 border-dashed border-gray-200">
-        <h2 className="font-semibold text-gray-900 text-xs tracking-wide uppercase">
-          Navigation
-        </h2>
-      </div>
-
-      {/* Navigation Tree */}
-      <nav className="flex-1 overflow-y-auto p-3 space-y-1.5">
-        {phases.map((phase) => {
-          const isExpanded = expandedPhases[phase.slug];
-          const isCurrentPhase = currentPhase === phase.slug;
-
-          return (
-            <div key={phase.slug} className="space-y-1">
-              {/* Phase Header */}
-              <button
-                onClick={() => togglePhase(phase.slug)}
-                className={`w-full flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold transition-colors border-2 border-dashed ${
-                  isCurrentPhase
-                    ? "bg-red-50 border-red-600 text-red-900"
-                    : "border-gray-300 text-gray-700 hover:bg-gray-50"
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <span className="w-4 h-4 flex items-center justify-center bg-red-600 text-white text-[0.65rem] font-semibold">
-                    {phase.number}
-                  </span>
-                  <span className="truncate">{phase.title}</span>
-                </div>
-                <Icon
-                  icon={isExpanded ? "mdi:chevron-up" : "mdi:chevron-down"}
-                  className="text-base shrink-0"
-                />
-              </button>
-
-              {/* Weeks List */}
-              <AnimatePresence>
-                {isExpanded && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="ml-3 space-y-0.5 pt-0.5">
-                      {phase.weeks.map((week) => {
-                        const isActive = currentWeek === week.slug;
-                        const weekPath = `/${phase.slug}/${week.slug}`;
-
-                        return (
-                          <Link
-                            key={week.slug}
-                            href={weekPath}
-                            onClick={() => setIsMobileOpen(false)}
-                            className={`block px-2.5 py-1.5 text-xs transition-colors border-l-2 ${
-                              isActive
-                                ? "border-red-600 bg-red-50 text-red-900 font-semibold"
-                                : "border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900 hover:border-gray-400"
-                            }`}
-                          >
-                            <div className="flex items-center gap-1.5">
-                              <span className="font-mono text-[0.65rem]">
-                                {week.number.toString().padStart(2, "0")}
-                              </span>
-                              <span className="truncate">{week.title}</span>
-                            </div>
-                            {isActive && (
-                              <div className="flex gap-1.5 mt-1">
-                                {week.days && week.days.length > 0 && (
-                                  <span className="text-[0.65rem] px-1 py-0.5 bg-purple-100 text-purple-700 border border-purple-300">
-                                    {week.days.length} Days
-                                  </span>
-                                )}
-                                {week.hasLab && (
-                                  <span className="text-[0.65rem] px-1 py-0.5 bg-green-100 text-green-700 border border-green-300">
-                                    Lab
-                                  </span>
-                                )}
-                                {week.hasNotes && (
-                                  <span className="text-[0.65rem] px-1 py-0.5 bg-blue-100 text-blue-700 border border-blue-300">
-                                    Notes
-                                  </span>
-                                )}
-                              </div>
-                            )}
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          );
-        })}
-      </nav>
-
-      {/* Footer */}
-      <div className="p-3 border-t-2 border-dashed border-gray-200">
-        <Link
-          href="/"
-          className="block text-xs text-red-600 hover:text-red-700 font-semibold transition-colors"
-        >
-          ← Back to Home
-        </Link>
-      </div>
-    </div>
-  );
+  const handleNavigate = () => {
+    setIsMobileOpen(false);
+  };
 
   return (
     <>
-      {/* Mobile Toggle Button */}
       <button
         onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="lg:hidden fixed bottom-4 right-4 z-50 w-10 h-10 bg-red-600 text-white flex items-center justify-center shadow-lg border-2 border-dashed border-white/30"
+        className="fixed bottom-4 right-4 z-50 flex h-10 w-10 items-center justify-center rounded-sm border border-white/30 bg-red-600 text-white shadow-lg lg:hidden"
         aria-label="Toggle sidebar"
       >
         <Icon
@@ -165,37 +169,36 @@ export default function Sidebar({
         />
       </button>
 
-      {/* Desktop Sidebar */}
-      <aside className="hidden lg:block fixed left-0 top-23 w-72 h-[calc(100vh-5.75rem)] bg-white border-r-2 border-dashed border-gray-200 z-30 overflow-y-auto">
-        <SidebarContent />
+      <aside className="fixed left-0 top-23 z-30 hidden h-[calc(100vh-5.75rem)] w-72 border-r border-slate-200 bg-white lg:block">
+        <SidebarTree
+          phases={phases}
+          currentPhase={currentPhase}
+          currentWeek={currentWeek}
+          expandedPhases={expandedPhases}
+          onTogglePhase={handleTogglePhase}
+          onNavigate={handleNavigate}
+        />
       </aside>
 
-      {/* Mobile Sidebar */}
-      <AnimatePresence>
-        {isMobileOpen && (
-          <>
-            {/* Overlay */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsMobileOpen(false)}
-              className="lg:hidden fixed inset-0 top-23 bg-black/50 z-40"
+      {isMobileOpen && (
+        <>
+          <div
+            onClick={handleNavigate}
+            className="fixed inset-0 top-23 z-40 bg-black/40 lg:hidden"
+          />
+          <aside className="fixed left-0 top-23 z-50 h-[calc(100vh-5.75rem)] w-72 border-r border-slate-200 bg-white lg:hidden">
+            <SidebarTree
+              phases={phases}
+              currentPhase={currentPhase}
+              currentWeek={currentWeek}
+              expandedPhases={expandedPhases}
+              onTogglePhase={handleTogglePhase}
+              onNavigate={handleNavigate}
+              mobile
             />
-
-            {/* Sidebar */}
-            <motion.aside
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{ type: "tween", duration: 0.3 }}
-              className="lg:hidden fixed left-0 top-23 w-72 h-[calc(100vh-5.75rem)] bg-white border-r-2 border-dashed border-gray-200 z-50 overflow-y-auto"
-            >
-              <SidebarContent />
-            </motion.aside>
-          </>
-        )}
-      </AnimatePresence>
+          </aside>
+        </>
+      )}
     </>
   );
 }

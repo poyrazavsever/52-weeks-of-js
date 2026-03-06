@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Badge, Card, CardContent, CardHeader, CardTitle } from "poyraz-ui/atoms";
 import type { Phase } from "@/lib/api";
 
 interface PhasesGridProps {
@@ -9,55 +10,54 @@ export default function PhasesGrid({ phases }: PhasesGridProps) {
   return (
     <section className="py-12">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+        <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2">
           {phases.map((phase) => (
-            <div
+            <Card
               key={phase.slug}
-              className="border-2 border-dashed border-gray-900 p-5 hover:bg-gray-50 transition-colors"
+              variant="bordered"
+              className="transition-colors hover:bg-gray-50"
             >
-              <div className="flex items-start justify-between mb-3">
+              <CardHeader className="flex flex-row items-start justify-between">
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-900 mb-1.5">
-                    {phase.title}
-                  </h2>
+                  <CardTitle>{phase.title}</CardTitle>
                   <p className="text-xs text-gray-600">
                     Phase {phase.number} • {phase.weeks.length} Weeks
                   </p>
                 </div>
-                <div className="w-10 h-10 bg-red-600 flex items-center justify-center text-white font-semibold text-base">
+                <Badge className="h-10 min-w-10 justify-center rounded-sm text-base">
                   {phase.number}
+                </Badge>
+              </CardHeader>
+
+              <CardContent className="space-y-3">
+                <div className="space-y-1.5">
+                  {phase.weeks.slice(0, 5).map((week) => (
+                    <Link
+                      key={week.slug}
+                      href={`/${phase.slug}/${week.slug}`}
+                      className="block border-b border-dashed border-gray-200 py-1 text-xs text-gray-700 transition-colors hover:text-red-600"
+                    >
+                      <span className="font-mono text-[0.65rem] text-gray-500">
+                        Week {week.number.toString().padStart(2, "0")}
+                      </span>{" "}
+                      • {week.title}
+                    </Link>
+                  ))}
+                  {phase.weeks.length > 5 && (
+                    <p className="pt-1.5 text-[0.65rem] text-gray-500">
+                      +{phase.weeks.length - 5} more weeks
+                    </p>
+                  )}
                 </div>
-              </div>
 
-              {/* Week List */}
-              <div className="space-y-1.5 mb-3">
-                {phase.weeks.slice(0, 5).map((week) => (
-                  <Link
-                    key={week.slug}
-                    href={`/${phase.slug}/${week.slug}`}
-                    className="block text-xs text-gray-700 hover:text-red-600 transition-colors py-1 border-b border-dashed border-gray-200"
-                  >
-                    <span className="font-mono text-[0.65rem] text-gray-500">
-                      Week {week.number.toString().padStart(2, "0")}
-                    </span>{" "}
-                    • {week.title}
-                  </Link>
-                ))}
-                {phase.weeks.length > 5 && (
-                  <p className="text-[0.65rem] text-gray-500 pt-1.5">
-                    +{phase.weeks.length - 5} more weeks
-                  </p>
-                )}
-              </div>
-
-              {/* View All Link */}
-              <Link
-                href={`/${phase.slug}`}
-                className="inline-block text-xs font-semibold text-red-600 hover:text-red-700 transition-colors"
-              >
-                View all weeks →
-              </Link>
-            </div>
+                <Link
+                  href={`/${phase.slug}`}
+                  className="inline-block text-xs font-semibold text-red-600 transition-colors hover:text-red-700"
+                >
+                  View all weeks →
+                </Link>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>

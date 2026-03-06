@@ -30,10 +30,9 @@ export default function AssetsPage() {
 
       {/* Main Content */}
       <div className="lg:pl-72">
-        <div className="container mx-auto px-4 py-6">
-          <div className="max-w-6xl mx-auto">
+        <div className="px-6 py-3 lg:px-8">
             {/* Header */}
-            <header className="mb-10 border-b-2 border-dashed border-gray-200 pb-5">
+            <header className="mb-8 pt-1">
               <h1 className="text-4xl font-semibold mb-3 text-gray-900">
                 Assets
               </h1>
@@ -65,7 +64,7 @@ export default function AssetsPage() {
               <div className="space-y-10">
                 {Object.entries(assetsByFolder).map(([folder, files]) => (
                   <section key={folder}>
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4 pb-2 border-b-2 border-dashed border-gray-200 capitalize">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4 capitalize">
                       {folder}
                     </h2>
                     <AssetsGrid files={files} />
@@ -80,7 +79,6 @@ export default function AssetsPage() {
                 </p>
               </div>
             )}
-          </div>
         </div>
       </div>
     </div>

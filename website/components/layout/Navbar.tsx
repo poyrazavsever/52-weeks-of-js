@@ -3,7 +3,24 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import Button from "@/components/ui/Button";
+import { Button } from "poyraz-ui/atoms";
+import {
+  Navbar as PoyrazNavbar,
+  NavbarActions,
+  NavbarBrand,
+  NavbarDropdown,
+  NavbarLink,
+  NavbarLinks,
+  NavbarMain,
+  NavbarMegaMenu,
+  NavbarMegaMenuItem,
+  NavbarMobileActions,
+  NavbarMobileGroup,
+  NavbarMobileLink,
+  NavbarMobileMenu,
+  NavbarMobileToggle,
+  NavbarTopBar,
+} from "poyraz-ui/organisms";
 import Logo from "./Logo";
 
 const navLinks = [
@@ -23,6 +40,9 @@ const navLinks = [
     title: "Seniority & CS",
     href: "/seniority-cs",
   },
+];
+
+const utilityLinks = [
   {
     title: "Extra / The Lab",
     href: "/extra",
@@ -56,60 +76,109 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50">
-      {/* Top Bar */}
-      <div className="bg-red-600 text-white text-xs py-1.5">
-        <div className="container mx-auto px-4">
-          <p className="font-medium">
-            Based in <span className="font-semibold">Ankara</span>,{" "}
-            {currentTime}
-          </p>
-        </div>
-      </div>
+    <PoyrazNavbar
+      variant="bordered"
+      sticky
+      containerClassName="container mx-auto px-4"
+      className="z-50 bg-white"
+    >
+      <NavbarTopBar className="bg-red-600 text-white">
+        <p className="text-xs font-medium">
+          Based in <span className="font-semibold">Ankara</span>, {currentTime}
+        </p>
+      </NavbarTopBar>
 
-      {/* Main Navbar */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center py-3">
-            {/* Logo */}
-            <Logo />
+      <NavbarMain className="py-3">
+        <NavbarBrand href="/" className="mr-6">
+          <Logo />
+        </NavbarBrand>
 
-            {/* Navigation Links */}
-            <div className="hidden lg:flex items-center gap-6 ml-6">
+        <NavbarLinks className="hidden flex-1 lg:flex">
+          <NavbarDropdown label="Roadmap">
+            <NavbarMegaMenu layout="full" className="w-full">
               {navLinks.map((link) => {
                 const isActive = pathname.startsWith(link.href);
                 return (
-                  <Link
+                  <NavbarMegaMenuItem
                     key={link.href}
                     href={link.href}
-                    className={`text-xs font-medium transition-colors pb-1 ${
-                      isActive
-                        ? "text-red-600 border-b-2 border-dashed border-red-600"
-                        : "text-gray-700 hover:text-red-600"
-                    }`}
-                  >
-                    {link.title}
-                  </Link>
+                    title={link.title}
+                    description={isActive ? "Current section" : "Phase overview"}
+                    className={isActive ? "border-red-600 bg-red-50" : undefined}
+                  />
                 );
               })}
-            </div>
+            </NavbarMegaMenu>
+          </NavbarDropdown>
 
-            {/* Action Buttons */}
-            <div className="flex items-center gap-2 ml-auto">
-              <Link href="https://poyrazavsever.com/blog" target="_blank">
-                <Button variant="outline" size="sm">
-                  Blog
-                </Button>
-              </Link>
-              <Link href="https://www.poyrazavsever.com">
-                <Button variant="solid" size="sm">
-                  Return Back
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
+          {utilityLinks.map((link) => {
+            const isActive = pathname.startsWith(link.href);
+            return (
+              <NavbarLink
+                key={link.href}
+                href={link.href}
+                className={
+                  isActive
+                    ? "text-red-600 border-b-2 border-dashed border-red-600"
+                    : "text-gray-700"
+                }
+              >
+                {link.title}
+              </NavbarLink>
+            );
+          })}
+        </NavbarLinks>
+
+        <NavbarActions className="ml-auto hidden lg:flex">
+          <Link href="https://poyrazavsever.com/blog" target="_blank">
+            <Button variant="outline" size="sm">
+              Blog
+            </Button>
+          </Link>
+          <Link href="https://www.poyrazavsever.com">
+            <Button size="sm">Return Back</Button>
+          </Link>
+        </NavbarActions>
+
+        <NavbarMobileToggle className="lg:hidden ml-auto" />
+      </NavbarMain>
+
+      <NavbarMobileMenu className="lg:hidden">
+        <NavbarMobileGroup label="Roadmap">
+          {navLinks.map((link) => (
+            <NavbarMobileLink
+              key={link.href}
+              href={link.href}
+              active={pathname.startsWith(link.href)}
+            >
+              {link.title}
+            </NavbarMobileLink>
+          ))}
+        </NavbarMobileGroup>
+        <NavbarMobileGroup label="More">
+          {utilityLinks.map((link) => (
+            <NavbarMobileLink
+              key={link.href}
+              href={link.href}
+              active={pathname.startsWith(link.href)}
+            >
+              {link.title}
+            </NavbarMobileLink>
+          ))}
+        </NavbarMobileGroup>
+        <NavbarMobileActions>
+          <Link href="https://poyrazavsever.com/blog" target="_blank">
+            <Button variant="outline" size="sm" className="w-full">
+              Blog
+            </Button>
+          </Link>
+          <Link href="https://www.poyrazavsever.com">
+            <Button size="sm" className="w-full">
+              Return Back
+            </Button>
+          </Link>
+        </NavbarMobileActions>
+      </NavbarMobileMenu>
+    </PoyrazNavbar>
   );
 }

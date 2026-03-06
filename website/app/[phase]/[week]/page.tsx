@@ -85,8 +85,7 @@ export default async function WeekPage({ params }: PageProps) {
 
       {/* Main Content */}
       <div className="lg:pl-72">
-        <div className="container mx-auto px-4 py-6">
-          <div className="max-w-4xl mx-auto">
+        <div className="px-6 py-3 lg:px-8">
             {/* Breadcrumbs */}
             <Breadcrumbs
               phase={phase}
@@ -95,7 +94,7 @@ export default async function WeekPage({ params }: PageProps) {
             />
 
             {/* Header */}
-            <header className="mb-6 border-b-2 border-dashed border-gray-200 pb-4">
+            <header className="mb-5 pt-1">
               <h1 className="text-3xl font-semibold mb-3 text-gray-900">
                 {content.metadata.title}
               </h1>
@@ -124,7 +123,7 @@ export default async function WeekPage({ params }: PageProps) {
 
               {/* Goal */}
               {content.metadata.goal && (
-                <div className="bg-red-50 border-2 border-dashed border-red-600 px-3 py-2">
+                <div className="bg-red-50 px-3 py-2 rounded-sm">
                   <p className="text-xs font-semibold text-red-900 mb-0.5">
                     Goal
                   </p>
@@ -139,7 +138,7 @@ export default async function WeekPage({ params }: PageProps) {
             <DayTabs days={dayTabs} />
 
             {/* Navigation */}
-            <nav className="mt-10 pt-6 border-t-2 border-dashed border-gray-200 flex justify-between">
+            <nav className="mt-8 pt-4 flex justify-between">
               <div className="text-gray-600 text-xs">
                 Phase:{" "}
                 <span className="font-semibold capitalize">
@@ -151,7 +150,6 @@ export default async function WeekPage({ params }: PageProps) {
                 <span className="font-semibold">{content.metadata.title}</span>
               </div>
             </nav>
-          </div>
         </div>
       </div>
     </div>
