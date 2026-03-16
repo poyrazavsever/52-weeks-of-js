@@ -1,0 +1,62 @@
+### Promise Nedir ve Neden İhtiyacımız Var?
+JavaScript'te Promise, şu an elimizde olmayan ama "gelecekte bir noktada elimizde olacağına (veya bir hata çıkacağına) dair verilmiş bir sözü" temsil eden özel bir objedir.
+
+Peki eskiden nasıldı? (Callback Cehennemi)
+Eskiden (2015 öncesi), bir asenkron işlem bittikten sonra başka bir asenkron işlem yapmak istediğimizde, fonksiyonları birbirinin içine parametre olarak gönderiyorduk. Buna Callback yöntemi deniyordu.
+
+Örneğin; veritabanına bağlan, sonra kullanıcıyı bul, sonra resmini getir, sonra ekrana çiz... Bu zinciri yazmak için fonksiyonları iç içe yazmak zorundaydık.
+
+Bu iç içe geçen, okuması imkansız ve "Sağa Doğru Kaymış" kod yapısına yazılımcılar Callback Hell (Geri Çağırım Cehennemi) adını taktı. İşte Promise bu cehennemi bitirmek için icat edildi. Kodu iç içe geçirmek yerine, alt alta temiz bir zincir (.then()) şeklinde yazmamızı sağladı.
+
+#### Gerçek Hayattan Promise Analojisi (Kargo Fişi)
+
+Diyelim ki internetten yeni bir kulaklık sipariş ettin ve parasını ödedin.
+Satıcı sana kulaklığı o saniye monitörden uzatıp veremez (çünkü kargo süreci asenkron ve zaman alan bir iştir).
+
+Bunun yerine satıcı sana bir Kargo Takip Numarası (Sipariş Fişi) verir.
+İşte o fiş, JavaScript'teki Promise'in ta kendisidir!
+
+- O fiş kulaklık değildir. Sadece kulaklığın geleceğine dair bir sözdür.
+- Fiş elindeyken hayatına devam edersin, beklerken donup kalmazsın (Non-blocking).
+- Kargo geldiğinde (Söz tutulduğunda -> Fulfilled), paketi açar ve müzik dinlersin (.then() kısmı).
+- Eğer kargo yolda kaybolursa veya iptal edilirse (Söz bozulursa -> Rejected), müşteri hizmetlerini ararsın (.catch() kısmı).
+
+**Lab: Kod Üzerinde Promise'in Anatomisi**
+
+Şimdi bu Kargo Fişi mantığını koda dökelim. En temel haliyle bir Promise kullanımı aşağıdaki gibidir.
+
+### Bölüm 1: Promise Sadece Bir "Söz" Değildir
+
+JavaScript'te bir Promise (Söz), aslında sihirli bir yapı değil, tamamen sıradan bir JavaScript Objesidir. Fakat onu özel kılan, JavaScript motoru tarafından yönetilen ve bizim dışarıdan doğrudan müdahale edemediğimiz iki tane gizli (internal) özelliğe sahip olmasıdır:
+
+1. ```[[PromiseState]]```: O anki durumunu tutar.
+2. ```[[PromiseResult]]```: İşlem bittiğinde dönecek olan veriyi (veya hata mesajını) tutar.
+
+Not: İsimlerinin etrafındaki köşeli parantezler [[ ]], bunlara kod yazarak benimSözüm.[[PromiseState]] şeklinde doğrudan erişemeyeceğin, sadece JS motorunun bildiği özellikler olduğunu gösterir.
+
+### Bölüm 2: 3 Durumlu Makine (State Machine)
+
+Bir Promise hayatı boyunca sadece 3 farklı durumda (State) bulunabilir:
+
+1. Pending (Beklemede): Promise ilk yaratıldığında bu durumdadır. [[PromiseResult]] değeri undefined'dır. İşlem arka planda devam ediyordur.
+
+2. Fulfilled (Başarılı/Yerine Getirildi): Eğer içindeki resolve(veri) fonksiyonu çağrılırsa durum Fulfilled olur. [[PromiseResult]] artık senin gönderdiğin o veridir.
+
+3. Rejected (Başarısız/Reddedildi): Eğer içindeki reject(hata) fonksiyonu çağrılırsa durum Rejected olur. [[PromiseResult]] artık hata mesajıdır.
+
+Altın Kural (Immutability): Bir Promise'in durumu SADECE BİR KERE değişebilir! Pending'den Fulfilled'e geçen bir Promise, bir daha asla Rejected olamaz veya geri Pending'e dönemez. Kilitlenir (Settled) ve sonsuza kadar öyle kalır.
+
+
+#### Analoji: Restoran Çağrı Cihazı
+
+Bir restorana gittin ve sipariş verdin. Kasiyer sana titreşimli, küçük kırmızı bir cihaz (Promise Objesi) verdi.
+
+- Cihaz elinde sessizce dururken durumu Pending'dir. Yemek mutfakta (Web API) hazırlanıyordur.
+- Birden cihaz ötmeye ve yeşil yanmaya başlar. Durum Fulfilled olmuştur. Gider yemeğini (Result) alırsın (.then çalışır).
+- Ya da cihaz kırmızı yanıp öter. Aşçı gelir ve "Maalesef et bitmiş" der. Durum Rejected olmuştur (.catch çalışır).
+
+**Önemli Kısım**: Cihaz bir kere yeşil yandıktan sonra, aniden kırmızıya dönmez. Karar verilmiştir ve konu kapanmıştır.
+
+Lab 1: Kendi Sözleşmemizi Yaratalım (Kod aşağıda)
+
+Tarayıcının konsolunda her zaman fetch kullanmak zorunda değiliz. Arka plandaki mekanizmayı görmek için kendi Promise objemizi sıfırdan inşa edelim. Konsola şu kodu yapıştır:
