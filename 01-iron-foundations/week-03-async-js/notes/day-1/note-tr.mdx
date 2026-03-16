@@ -1,0 +1,92 @@
+### Bölüm 1: "Single-Threaded" (Tek İplikli) Ne Demek?
+
+JavaScript'in doğasını anlamak için önce işletim sistemi seviyesine inmeliyiz. Bilgisayar bilimlerinde Thread (İş Parçacığı), bir programın çalıştırıldığı yoldur.
+
+Java veya C# gibi diller Multi-threaded'dir (Çoklu İş Parçacıklı). Yani aynı anda 4 farklı işçi (thread) çalıştırıp, birine "Sen internetten resim indir", diğerine "Sen müzik çal", ötekine "Sen ekrandaki butonu çiz" diyebilirler.
+
+JavaScript ise Single-Threaded'dir. Sadece 1 tane işçisi (Ana Thread) vardır. Aynı anda sadece ve sadece 1 satır kod çalıştırabilir.
+
+Problem: Diyelim ki bir UI kütüphanesi inşa ediyorsun ve ekranda havalı bir Modal bileşeni var. Eğer o tek işçi, internetten 5 saniye sürecek devasa bir veriyi çekmeye çalışırsa ne olur? İşçi o 5 saniye boyunca donar (Buna Blocking - Bloklama denir). Ekranda hiçbir butona tıklanamaz, sayfa kaydırılamaz, animasyonlar durur. Kullanıcı "Uygulama çöktü" sanıp sekmeyi kapatır.
+
+Peki JavaScript nasıl oluyor da arka planda veri çekerken ekranı dondurmuyor? İşte burada asenkron mimari devreye giriyor!
+
+
+### Bölüm 2: Tarayıcının Asenkron Mimarisi (4 Büyük Oyuncu)
+
+Aslında "Asenkron JavaScript" derken biraz yalan söyleriz. Çünkü asenkron işlemleri yapan JavaScript'in kendisi değil, onun çalıştığı ortamdır (Tarayıcı veya Node.js).
+
+Bu mimarinin 4 ana aktörü vardır:
+
+#### 1. Call Stack (Çağrı Yığını - Ana Ameliyathane)
+
+Bunu 1. Hafta'dan tanıyorsun. JS motorunun (V8) ta kendisidir. Kodu yukarıdan aşağı okur ve anında çalıştırır. Asla bekleme yapmaz. LIFO (Son Giren İlk Çıkar) mantığıyla çalışır.
+
+#### 2. Web APIs (Tarayıcı Asistanları / C++ Departmanı)
+
+Burası JavaScript değildir! Burası tarayıcının (örneğin Chrome'un) arka planda C++ ile yazdığı, JS'e sunduğu ekstra yeteneklerdir.
+
+- Zamanlayıcılar (setTimeout, setInterval)
+- İnternet İstekleri (fetch, XMLHttpRequest)
+- DOM Olayları (Tıklama, kaydırma vb.)
+- JS, "Beklenmesi gereken" uzun bir iş gördüğünde, bunu Call Stack'te tutmaz, hemen Web API departmanına şutlar ve kendi işine devam eder.
+
+
+#### 3. Callback Queue / Task Queue (Bekleme Salonu)
+
+Web API departmanında işi biten (örneğin 3 saniye dolan veya internetten veri dönen) görevler, çalıştırılmak üzere hazırlanan fonksiyonlarıyla (callback) birlikte bu salona gönderilir.
+Burası FIFO (İlk Giren İlk Çıkar) mantığıyla çalışır. Ekmek kuyruğu gibidir; kim önce geldiyse ilk o hizmet alır.
+
+#### 4. Event Loop (Sıra Yöneticisi / Trafik Polisi)
+
+Tek bir görevi olan, sonsuz bir döngüdür (while(true)). Sadece şu iki şeye bakar:
+
+- Call Stack tamamen boş mu? (Ana işçi şu an müsait mi?)
+- Callback Queue'da bekleyen biri var mı? Eğer Call Stack boşsa, bekleme salonundaki İLK kişiyi alır ve Call Stack'e sokar.
+
+#### Analoji: Fast Food Restoranı (Concurrency Model)
+
+- Kasiyer (Call Stack): Tek bir kasiyer var. Sadece sipariş alıyor ve parayı çekiyor. Hızlıdır.
+- Mutfak (Web APIs): Arka planda hamburgeri pişiren devasa ekip.
+- Hazır Siparişler Tezgahı (Callback Queue): Pişen hamburgerlerin tepsiyle müşteriye verilmek üzere dizildiği yer.
+- Restoran Müdürü (Event Loop): Sürekli kasiyeri ve tezgahı izleyen kişi.
+
+Sen (Kod) gelip "1 Kola" istersen, kasiyer hemen verir (Senkron kod). "10 Hamburger" istersen, kasiyer "Bunu mutfağa (Web API) iletiyorum" der ve seni kenara alıp arkandaki müşterinin siparişini almaya devam eder. Ekran (UI) donmaz! Mutfak işi bitirince tepsiyi tezgaha (Queue) koyar. Müdür (Event Loop), kasiyerin önünde o an müşteri yoksa (Call Stack boşsa) tepsiyi alıp sana teslim eder.
+
+**Lab 1: Zaman Yolculuğu Deneyi**
+
+Klasik bir mülakat sorusudur. Aşağıdaki kodun çıktısını ve motorun arka planda bunu nasıl işlediğini adım adım inceleyelim. F12 ile konsoluna yazabilirsin.
+
+**Kodu en aşağıdan incele**
+
+Arka Plandaki Kusursuz Koreografi:
+
+- JS motoru 1. satıra gelir. console.log("1...") Call Stack'e girer, anında ekrana yazdırılır ve çöpe atılır.
+- Motor setTimeout'u görür. "Aha, bu zaman alacak bir iş!" der. Bunu Call Stack'te bekletmez. İçindeki asistanGorevi fonksiyonunu ve "2 saniye" bilgisini Web API departmanına yollar.
+- Web API arka planda kronometreyi (2 saniye) başlatırken, JS motoru ASLA durmaz, alt satıra geçer.
+- Motor 3. satıra gelir. console.log("3...") Call Stack'e girer, ekrana yazılır ve atılır. (Sayfa yüklendi, kullanıcı kullanıyor).
+- [2 Saniye Sonra...] Web API'deki kronometre dolar. Web API, asistanGorevi fonksiyonunu alır ve Callback Queue'ya (Bekleme Salonu) fırlatır.
+- Event Loop her milisaniye kontrol etmektedir: "Call Stack boş mu?" -> Evet (ana kod bitti). "Kuyrukta biri var mı?" -> Evet, asistanGorevi bekliyor.
+- Event Loop, fonksiyonu alır ve Call Stack'e atar. console.log("2...") çalışır.
+
+Konsol Çıktısı:
+
+    **Uygulama Başladı**
+
+    **UI Çizildi ve Kullanıma Hazır**
+
+    **İnternetten veri geldi (Arka plan bitti)**
+
+
+### İleri Seviye
+
+Peki ya setTimeout süresini 0 (sıfır) saniye yaparsak ne olur? Hemen mi çalışır?
+
+```js
+console.log("A");
+setTimeout(() => console.log("B"), 0);
+console.log("C");
+```
+
+Sıfır saniye olsa bile, bir asenkron fonksiyon asla doğrudan Call Stack'e giremez. Önce Web API'ye gider (0 saniyede biter), sonra Callback Queue'ya düşer. Ve Event Loop'un kuralını hatırla: Call Stack (ana kod) tamamen boşalmadan kuyruktan kimseyi almaz!
+
+Bu yüzden çıktı her zaman A, C, B olacaktır. Yani 0 saniye, "Hemen çalış" demek değildir; "Ana işler biter bitmez çalışacaklar kuyruğunda en öne geç" demektir.
