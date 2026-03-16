@@ -1,0 +1,34 @@
+### Bölüm 1: İki Farklı Bekleme Salonu
+
+JavaScript motoru asenkron görevleri önem derecesine göre iki farklı sıraya ayırır:
+- **Macrotasks** (Büyük Görevler): ```setTimeout```, ```setInterval```, ```setImmediate``` gibi görevler.
+- **Microtasks** (Küçük Görevler): ```Promise.resolve()```, ```queueMicrotask()```, ```.then```, ```.catch```, ```.finally``` gibi görevler.
+
+### Bölüm 2: Event Loop'un Adaletsiz Kuralı
+
+Event Loop (Sıra Yöneticisi) adaletli değildir; taraf tutar! Call Stack (Ana Ameliyathane) boşaldığı an izlediği kural tam olarak şudur:
+
+1. Önce Microtask (VIP) sırasına bak. Eğer orada birileri varsa, tüm sıra tamamen boşalana kadar onları tek tek Call Stack'e al.
+2. VIP sırası tamamen bittiğinde, gidip Macrotask (Standart) sırasından SADECE 1 KİŞİ al ve çalıştır.
+3. O 1 standart görev biter bitmez, hemen geri dönüp tekrar VIP sırasını kontrol et! (Çünkü o arada yeni bir VIP gelmiş olabilir).
+
+**Analoji: Gece Kulübü Kapısı**
+Call Stack'i kulübün içi, Event Loop'u kapıdaki koruma (Bouncer) olarak düşün.
+Dışarıda iki sıra var: Uzun bir normal bilet sırası (Macrotask) ve bir VIP sırası (Microtask).
+Korumanın kuralı nettir: VIP sırasında 1 kişi bile varsa, normal sıradakiler beklemek zorundadır. Hatta koruma tam normal sıradan birini alacakken taksiden yeni bir VIP inse bile, normal sıradakini durdurup önce VIP'yi içeri alır. Normal sıradakiler sadece ve sadece etrafta hiç VIP kalmadığında içeri sızabilir.
+
+Peki ya bir VIP, içeri girdikten sonra arkadaşlarını da VIP sırasına çağırırsa ne olur?
+
+**Lab Örnekleri aşağıda**
+
+**Ne Olur?**
+Event Loop, Microtask (VIP) sırasını boşaltmaya başlar. B çalışır. Fakat B çalışırken kuyruğa yeni bir Microtask (C) eklenir. Event Loop'un kuralını hatırla: "Microtask sırası TAMAMEN boşalmadan Macrotask'a geçme!" Bu yüzden Event Loop A'ya geçmek yerine yeni gelen C'yi de çalıştırır. A zavallısı ancak C de bittikten sonra çalışabilir.
+
+#### Son Çıktı Sırası: B, C, A.
+
+Tehlike: Eğer Promise içinden sürekli yeni Promise üreten sonsuz bir döngü yazarsan (Microtask starvation), Macrotask'taki setTimeout'lar veya kullanıcının tıklama olayları (DOM Events) asla çalışamaz. Ekran kitlenir!
+
+**Özetle**
+- Asenkron JavaScript'te her görev eşit yaratılmamıştır.
+- Microtasks (Promise'ler), Macrotasks (setTimeout'lar) üzerinde mutlak üstünlüğe sahiptir.
+- Kod okurken veya hata ayıklarken her zaman önce senkron kodları, sonra Promise'leri, en son setTimeout gibi zamanlayıcıları zihninde sıraya koymalısın.
