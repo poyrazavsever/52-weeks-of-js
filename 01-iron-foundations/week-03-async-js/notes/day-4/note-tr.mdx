@@ -1,0 +1,33 @@
+### Bölüm 1: "Sözdizimsel Şeker" (Syntactic Sugar) Nedir?
+
+Programlama dünyasında "Sözdizimsel Şeker", arka planda çalışan yeni bir teknoloji olmayan, sadece var olan karmaşık bir yapıyı yazılımcının gözüne daha güzel, tatlı ve okunaklı göstermek için icat edilmiş kod yazım şekillerine denir.
+
+```async``` ve ```await``` yepyeni bir asenkron mimari değildir! Kaputun altında %100 oranında bir önceki adımda öğrendiğimiz Promise'leri kullanır. Sadece bizim .then() ve .catch() yazma hamallığımızı ortadan kaldırır.
+
+### Bölüm 2: Kelimelerin Meali ve Kurallar
+1. ```async``` (Asynchronous): Bir fonksiyonun başına yazılır. JS motoruna şu mesajı verir: "Haberin olsun, bu fonksiyonun içinde zaman alacak işler olabilir. Ve sen ne return edersen et, ben onu arka planda otomatik olarak bir Promise (Kargo Fişi) içine sarıp dışarıya öyle vereceğim."
+
+2. ```await``` (Bekle): SADECE async ile işaretlenmiş bir fonksiyonun içinde kullanılabilir. Bir Promise'in (Kargo Fişinin) önüne yazılır. Anlamı şudur: "Bu fişin sonucu (Fulfilled veya Rejected) gelene kadar bu satırda dur. Alt satıra geçme!"
+
+#### Analoji: Zamanı Donduran Kumanda
+Call Stack'i (Ana ameliyathaneyi) evindeki tüm televizyonların aynı anda çalıştığı bir sistem olarak düşün.
+await kelimesi sihirli bir kumandadır. Ama bu kumanda tüm evi dondurmaz! Sadece elinde tuttuğun o spesifik televizyonun (o anki Function Execution Context'in) yayınını dondurur. O televizyon internetten filmi indirene kadar donuk kalır ama sen o sırada mutfaktaki televizyonda başka bir şey izlemeye devam edebilirsin (Event Loop çalışmaya, diğer kodlar işlemeye devam eder). Film indiğinde (Promise çözüldüğünde) donan televizyon kaldığı yerden oynamaya başlar.
+
+
+### Bölüm 3: Kaputun Altındaki İllüzyon (Compilation)
+
+Peki JS motoru (V8) bu şık kodu görünce arka planda ne yapıyor? JS motorları ```async/await``` kodunu çalıştırırken onu eski usül Generator Functions ve Promise zincirlerine dönüştürür.
+
+Sen await yazdığında, motor o satırı bir ```.then()``` bloğunun içine hapseder ve fonksiyonun geri kalan tüm alt satırlarını o ```.then()```'in içine saklar.
+
+İşte bu yüzden await kelimesinden sonraki her şey aslında bir Microtask (VIP Sırası) haline gelir!
+
+**Lab 1: Cehennemden Kurtuluş Deneyi**
+
+Diyelim ki modern bir arayüz geliştiriyorsun. Önce kullanıcının profilini çekeceğiz, sonra o profildeki ID ile gidip yetkilerini çekeceğiz. İkisi de birbirine bağlı asenkron işler.
+
+Önce eski usül Promise (then) Zinciri ile yazalım (Kod aşağıda)
+
+Gördüğün gibi okuması zor, sürekli bir return karmaşası var.
+
+Şimdi aynı kodu async/await ile (Sözdizimsel Şeker kullanarak) yazalım:
