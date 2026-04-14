@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getPhases, getWeekContent } from "@/lib/api";
-import { parseMDX } from "@/lib/mdx";
+import { parseMDX, parseMDXWithTheme } from "@/lib/mdx";
 import Sidebar from "@/components/layout/Sidebar";
 import DayTabs from "@/components/shared/DayTabs";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
@@ -61,7 +61,7 @@ export default async function WeekPage({ params }: PageProps) {
     notFound();
   }
 
-  // Parse each day's note MDX content
+  // Parse each day's note and lab MDX content
   const dayTabs = await Promise.all(
     content.days.map(async (day) => {
       let noteContent = null;
@@ -69,11 +69,32 @@ export default async function WeekPage({ params }: PageProps) {
         const { content: parsed } = await parseMDX(day.note);
         noteContent = parsed;
       }
+
+      // Parse lab files for syntax highlighting
+      const parsedLabs = await Promise.all(
+        day.labs.map(async (lab) => {
+          const parsedFiles = await Promise.all(
+            lab.files.map(async (file) => {
+              const mdxCode = `\`\`\`${file.language || "text"}\n${file.content}\n\`\`\``;
+              const { content: highlightedContent } = await parseMDXWithTheme(mdxCode, "github-dark");
+              return {
+                ...file,
+                highlightedContent,
+              };
+            })
+          );
+          return {
+            name: lab.name,
+            files: parsedFiles,
+          };
+        })
+      );
+
       return {
         dayNumber: day.dayNumber,
         slug: day.slug,
         noteContent,
-        labs: day.labs,
+        labs: parsedLabs,
       };
     }),
   );

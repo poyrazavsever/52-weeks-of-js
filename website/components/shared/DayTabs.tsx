@@ -15,13 +15,17 @@ import {
 } from "poyraz-ui/molecules";
 import type { LabFile } from "@/lib/api";
 
+export interface ParsedLabFile extends LabFile {
+  highlightedContent?: React.ReactNode;
+}
+
 interface DayTab {
   dayNumber: number;
   slug: string;
   noteContent: React.ReactNode | null;
   labs: {
     name: string;
-    files: LabFile[];
+    files: ParsedLabFile[];
   }[];
 }
 
@@ -98,7 +102,7 @@ export default function DayTabs({ days }: DayTabsProps) {
 interface LabAccordionProps {
   value: string;
   title: string;
-  files: LabFile[];
+  files: ParsedLabFile[];
 }
 
 function LabAccordion({ value, title, files }: LabAccordionProps) {
@@ -156,11 +160,17 @@ function LabAccordion({ value, title, files }: LabAccordionProps) {
                 </div>
 
                 <ScrollArea className="max-h-96">
-                  <pre className="overflow-x-auto p-4">
-                    <code className="text-xs font-mono leading-relaxed">
-                      {file.content}
-                    </code>
-                  </pre>
+                  {file.highlightedContent ? (
+                    <div className="p-4 text-sm [&_pre]:m-0 [&_pre]:bg-transparent [&_pre]:p-0 [&_code]:grid [&_.line]:min-h-[1.5rem]">
+                      {file.highlightedContent}
+                    </div>
+                  ) : (
+                    <pre className="overflow-x-auto p-4">
+                      <code className="text-xs font-mono leading-relaxed">
+                        {file.content}
+                      </code>
+                    </pre>
+                  )}
                 </ScrollArea>
 
                 <div className="flex items-center justify-between border-t bg-gray-100 px-4 py-2 text-xs text-gray-600">
